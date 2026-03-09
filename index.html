@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node.js Academy</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo" id="logo-link"><span>Node.js</span> Academy</div>
+        <div class="header-controls">
+            <button id="home-btn" class="header-link-btn">Inicio</button>
+            <button id="menu-btn" class="menu-btn">Contenido del curso</button>
+        </div>
+    </header>
+
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>Contenido</h2>
+            <button id="close-btn" class="close-btn" aria-label="Cerrar menú">✖</button>
+        </div>
+        <ul id="nav-links">
+            <li><a href="#" data-target="module1">1. Introducción a Node.js</a></li>
+            <li><a href="#" data-target="module2">2. Express y APIs REST</a></li>
+            <li><a href="#" data-target="module3">3. Bases de Datos con MongoDB</a></li>
+        </ul>
+    </nav>
+    <div id="overlay" class="overlay"></div>
+
+    <main id="main-content">
+        
+        <section id="home" class="content-section active">
+            
+            <div class="hero">
+                <h1>Desarrollo Backend con Node.js</h1>
+                <p class="description">
+                    Aprende a construir aplicaciones escalables, rápidas y seguras desde cero. 
+                    Domina el ecosistema de JavaScript en el servidor y lleva tus habilidades al siguiente nivel.
+                </p>
+            </div>
+            
+            <div class="prerequisites">
+                <h3>¿Qué necesitas saber? (Prerrequisitos)</h3>
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <h4>Fundamentos de Programación</h4>
+                        <p>Variables, tipos de datos, operadores, condicionales, bucles, funciones, arrays y objetos.</p>
+                        <button class="resource-btn" data-title="Fundamentos de Programación" data-link="https://developer.mozilla.org/es/docs/Learn/JavaScript/First_steps">Material de apoyo</button>
+                    </div>
+                    <div class="summary-card">
+                        <h4>JavaScript Moderno (ES6+)</h4>
+                        <p>let y const, template strings, destructuring de objetos y arrays.</p>
+                        <button class="resource-btn" data-title="JavaScript Moderno" data-link="https://javascript.info/">Material de apoyo</button>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Terminal y Sistema Archivos</h4>
+                        <p>Navegación básica en la terminal y manejo de archivos y carpetas.</p>
+                        <button class="resource-btn" data-title="Uso de la Terminal" data-link="https://ubuntu.com/tutorials/command-line-for-beginners">Material de apoyo</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="course-summary">
+                <h3>¿Qué aprenderás? (Contenido del curso)</h3>
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <h4>1. Fundamentos Core</h4>
+                        <p>Arquitectura asíncrona, Event Loop, File System y gestión de paquetes con NPM.</p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>2. Servidores con Express</h4>
+                        <p>Creación de servidores robustos, middlewares, rutas y controladores.</p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>3. Bases de Datos</h4>
+                        <p>Modelado de datos e integración con MongoDB usando Mongoose.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta-container">
+                <button id="start-course-btn" class="main-cta-btn">
+                    ¡Iniciar Curso! <i class="fas fa-rocket"></i>
+                </button>
+            </div>
+        </section>
+
+        <section id="module1" class="content-section">
+            <span class="module-tag">Módulo 1</span>
+            <h2>Introducción a Node.js</h2>
+            <p>En esta lección entenderemos qué hace a Node.js tan especial y escribiremos nuestro primer servidor web nativo.</p>
+            
+            <h3>Video de la Clase</h3>
+            <div class="video-container">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/tgbNymZ7vqY" title="Clase 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <h3>Nuestro primer servidor web</h3>
+            <p>A diferencia de PHP o Apache, en Node.js nosotros mismos levantamos el servidor usando el módulo <code>http</code>. Aquí tienes el código base:</p>
+            
+            <div class="code-block">
+                <div class="code-header">server.js</div>
+                <pre><code>const http = require('http');
+
+const server = http.createServer((req, res) => {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    res.end('¡Hola, Backend desde Node.js!');
+});
+
+server.listen(3000, () => {
+    console.log('Servidor corriendo en el puerto 3000');
+});</code></pre>
+            </div>
+            <div class="module-navigation">
+                <button class="next-btn" data-next="module2">Ir al Módulo 2 <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </section>
+
+        <section id="module2" class="content-section">
+            <span class="module-tag">Módulo 2</span>
+            <h2>Express y APIs REST</h2>
+            <p>Contenido en construcción...</p>
+            <div class="module-navigation">
+                <button class="next-btn" data-next="module3">Ir al Módulo 3 <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </section>
+
+        <section id="module3" class="content-section">
+            <span class="module-tag">Módulo 3</span>
+            <h2>Bases de Datos con MongoDB</h2>
+            <p>Contenido en construcción...</p>
+            
+            <div class="module-navigation">
+                <button class="next-btn" data-next="course-completed">Finalizar Curso <i class="fas fa-check-circle"></i></button>
+            </div>
+        </section>
+
+        <section id="course-completed" class="content-section">
+            <div class="completion-container">
+                <h2>¡Felicidades, has finalizado el curso! 🎉</h2>
+                <p>Espero que hayas disfrutado y aprendido mucho sobre Node.js.</p>
+                <p>Tu opinión es muy importante para seguir mejorando. Por favor, envía tus comentarios, dudas o feedback a mi correo:</p>
+                <a href="mailto:tu-correo@ejemplo.com" class="email-link">
+                    <i class="fas fa-envelope"></i> tu-correo@ejemplo.com
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="resource-modal" class="modal-overlay-alert">
+        <div class="modal-content">
+            <span class="close-modal" aria-label="Cerrar ventana">✖</span>
+            <h3 id="modal-title">Título del Prerrequisito</h3>
+            <p>Si aún no dominas este tema, te recomendamos estudiarlo antes de comenzar el curso para que le saques el máximo provecho a las lecciones.</p>
+            <a href="#" id="modal-link" target="_blank" class="external-link-btn">
+                Ir al material de estudio <i class="fas fa-external-link-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
