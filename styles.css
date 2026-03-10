@@ -7,8 +7,8 @@
     --surface-color: #1e293b;
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
-    --accent-color: #10b981;
-    --accent-hover: #059669;
+    --accent-color: #3b82f6;
+    --accent-hover: #2563eb;
 }
 
 * {
@@ -315,7 +315,7 @@ header {
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.25);
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -324,7 +324,7 @@ header {
 .main-cta-btn:hover {
     background-color: var(--accent-hover);
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
 }
 
 .main-cta-btn:active {
@@ -462,34 +462,59 @@ code {
     color: #38bdf8;
 }
 
+
 /* ================= NAVEGACIÓN ENTRE MÓDULOS ================= */
 .module-navigation {
     margin-top: 3rem;
     padding-top: 2rem;
     border-top: 1px solid #334155;
     display: flex;
-    justify-content: flex-end; /* Alinea el botón a la derecha */
+    justify-content: space-between; /* Separa los botones a los extremos */
+    align-items: center;
 }
 
-.next-btn {
-    background-color: var(--accent-color);
-    color: #ffffff;
+/* Cuando solo hay un botón (Módulo 1), lo tiramos a la derecha */
+.module-navigation.single-btn {
+    justify-content: flex-end;
+}
+
+/* Estilos base para ambos botones */
+.nav-module-btn {
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
     font-weight: 600;
     padding: 12px 24px;
-    border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.2s ease, background-color 0.3s ease;
+    transition: transform 0.2s ease, background-color 0.3s ease, color 0.3s ease;
     display: inline-flex;
     align-items: center;
     gap: 8px;
 }
 
-.next-btn:hover {
+/* Estilo para el botón Siguiente (Principal) */
+.nav-module-btn.next {
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border: none;
+}
+
+.nav-module-btn.next:hover {
     background-color: var(--accent-hover);
-    transform: translateX(4px); /* Pequeño movimiento hacia la derecha al pasar el mouse */
+    transform: translateX(4px);
+}
+
+/* Estilo para el botón Anterior (Secundario) */
+.nav-module-btn.prev {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid #334155;
+}
+
+.nav-module-btn.prev:hover {
+    background-color: #334155;
+    color: var(--text-primary);
+    transform: translateX(-4px);
 }
 
 /* ================= PANTALLA DE FINALIZACIÓN ================= */
@@ -543,4 +568,3 @@ code {
     .hero h1 { font-size: 2rem; }
     .header-controls { gap: 1rem; }
 }
-

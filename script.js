@@ -127,13 +127,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ================= 5. BOTONES DE SIGUIENTE MÓDULO =================
-    const nextBtns = document.querySelectorAll(".next-btn");
+    // ================= 5. NAVEGACIÓN ENTRE MÓDULOS (ANTERIOR / SIGUIENTE) =================
+    const navModuleBtns = document.querySelectorAll(".nav-module-btn");
 
-    nextBtns.forEach(btn => {
+    navModuleBtns.forEach(btn => {
         btn.addEventListener("click", function() {
-            // Obtenemos a qué módulo debemos ir
-            const targetId = this.getAttribute("data-next");
+            // Obtenemos a qué módulo debemos ir leyendo el 'data-navigate'
+            const targetId = this.getAttribute("data-navigate");
             
             // 1. Ocultamos todas las secciones
             sections.forEach(section => section.classList.remove("active"));
@@ -149,9 +149,9 @@ document.addEventListener("DOMContentLoaded", () => {
             
             // 4. Si NO es la pantalla final, iluminamos el módulo correspondiente en el menú
             if (targetId !== "course-completed") {
-                const nextLink = document.querySelector(`a[data-target="${targetId}"]`);
-                if (nextLink) {
-                    nextLink.classList.add("active-link");
+                const targetLink = document.querySelector(`a[data-target="${targetId}"]`);
+                if (targetLink) {
+                    targetLink.classList.add("active-link");
                 }
             }
             

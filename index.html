@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Node.js Academy</title>
+    <title>Backend Academy</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
     <header>
-        <div class="logo" id="logo-link"><span>Node.js</span> Academy</div>
+        <div class="logo" id="logo-link"><span>Backend</span> Academy</div>
         <div class="header-controls">
             <button id="home-btn" class="header-link-btn">Inicio</button>
             <button id="menu-btn" class="menu-btn">Contenido del curso</button>
@@ -23,9 +23,12 @@
             <button id="close-btn" class="close-btn" aria-label="Cerrar menú">✖</button>
         </div>
         <ul id="nav-links">
-            <li><a href="#" data-target="module1">1. Introducción a Node.js</a></li>
-            <li><a href="#" data-target="module2">2. Express y APIs REST</a></li>
-            <li><a href="#" data-target="module3">3. Bases de Datos con MongoDB</a></li>
+            <li><a href="#" data-target="module1">1. Fundamentos del Backend</a></li>
+            <li><a href="#" data-target="module2">2. Node.js desde Cero</a></li>
+            <li><a href="#" data-target="module3">3. Creación de APIs REST</a></li>
+            <li><a href="#" data-target="module4">4. Bases de Datos</a></li>
+            <li><a href="#" data-target="module5">5. Autenticación y Seguridad</a></li>
+            <li><a href="#" data-target="module6">6. Arquitectura Profesional</a></li>
         </ul>
     </nav>
     <div id="overlay" class="overlay"></div>
@@ -35,10 +38,9 @@
         <section id="home" class="content-section active">
             
             <div class="hero">
-                <h1>Desarrollo Backend con Node.js</h1>
+                <h1>Curso de Desarrollo Backend</h1>
                 <p class="description">
-                    Aprende a construir aplicaciones escalables, rápidas y seguras desde cero. 
-                    Domina el ecosistema de JavaScript en el servidor y lleva tus habilidades al siguiente nivel.
+                    Aprende a construir aplicaciones backend modernas desde cero hasta nivel profesional utilizando Node.js, Express y bases de datos reales.
                 </p>
             </div>
             
@@ -48,17 +50,17 @@
                     <div class="summary-card">
                         <h4>Fundamentos de Programación</h4>
                         <p>Variables, tipos de datos, operadores, condicionales, bucles, funciones, arrays y objetos.</p>
-                        <button class="resource-btn" data-title="Fundamentos de Programación" data-link="https://developer.mozilla.org/es/docs/Learn/JavaScript/First_steps">Material de apoyo</button>
+                        <button class="resource-btn" data-title="Fundamentos de Programación" data-link="https://www.coursera.org/programs/coursera-para-la-universidad-nacional-de-colombia-ji3sj/learn/programacion-con-python-basico">Material de apoyo</button>
                     </div>
                     <div class="summary-card">
                         <h4>JavaScript Moderno (ES6+)</h4>
                         <p>let y const, template strings, destructuring de objetos y arrays.</p>
-                        <button class="resource-btn" data-title="JavaScript Moderno" data-link="https://javascript.info/">Material de apoyo</button>
+                        <button class="resource-btn" data-title="JavaScript Moderno" data-link="https://www.youtube.com/watch?v=1glVfFxj8a4">Material de apoyo</button>
                     </div>
                     <div class="summary-card">
                         <h4>Terminal y Sistema Archivos</h4>
                         <p>Navegación básica en la terminal y manejo de archivos y carpetas.</p>
-                        <button class="resource-btn" data-title="Uso de la Terminal" data-link="https://ubuntu.com/tutorials/command-line-for-beginners">Material de apoyo</button>
+                        <button class="resource-btn" data-title="Uso de la Terminal" data-link="https://www.youtube.com/watch?v=ABgLEKFhlZE">Material de apoyo</button>
                     </div>
                 </div>
             </div>
@@ -67,16 +69,28 @@
                 <h3>¿Qué aprenderás? (Contenido del curso)</h3>
                 <div class="summary-grid">
                     <div class="summary-card">
-                        <h4>1. Fundamentos Core</h4>
-                        <p>Arquitectura asíncrona, Event Loop, File System y gestión de paquetes con NPM.</p>
+                        <h4>1. Fundamentos del Backend</h4>
+                        <p>En este módulo aprenderás cómo funciona realmente la web detrás de escena. Entenderás conceptos clave como HTTP, APIs, JSON y la comunicación entre cliente y servidor, que son la base de todo sistema backend.</p>
                     </div>
                     <div class="summary-card">
-                        <h4>2. Servidores con Express</h4>
-                        <p>Creación de servidores robustos, middlewares, rutas y controladores.</p>
+                        <h4>2. Node.js desde Cero</h4>
+                        <p>Aprenderás cómo usar Node.js para crear servidores reales con JavaScript. Descubrirás cómo funciona el event loop, los módulos de Node y construirás tu primer servidor desde cero.</p>
                     </div>
                     <div class="summary-card">
-                        <h4>3. Bases de Datos</h4>
-                        <p>Modelado de datos e integración con MongoDB usando Mongoose.</p>
+                        <h4>3. Creación de APIs REST con Express</h4>
+                        <p>Durante este módulo aprenderás a desarrollar APIs REST profesionales utilizando Express. Crearás rutas, controladores y middlewares para construir aplicaciones backend modernas.</p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>4. Bases de Datos (SQL y MongoDB)</h4>
+                        <p>Aprenderás cómo guardar, consultar y administrar datos en aplicaciones backend usando bases de datos relacionales (SQL) y NoSQL (MongoDB).</p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>5. Autenticación y Seguridad</h4>
+                        <p>En este módulo aprenderás a proteger tus aplicaciones backend implementando autenticación con JWT, manejo seguro de contraseñas y protección contra ataques comunes.</p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>6. Arquitectura Backend Profesional</h4>
+                        <p>Aprenderás cómo se estructuran los proyectos backend a nivel profesional, aplicando arquitectura, patrones de diseño, testing y despliegue de aplicaciones.</p>
                     </div>
                 </div>
             </div>
@@ -90,62 +104,76 @@
 
         <section id="module1" class="content-section">
             <span class="module-tag">Módulo 1</span>
-            <h2>Introducción a Node.js</h2>
-            <p>En esta lección entenderemos qué hace a Node.js tan especial y escribiremos nuestro primer servidor web nativo.</p>
+            <h2>Fundamentos del Backend</h2>
+            <p>Contenido en construcción...</p>
             
-            <h3>Video de la Clase</h3>
-            <div class="video-container">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/tgbNymZ7vqY" title="Clase 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-
-            <h3>Nuestro primer servidor web</h3>
-            <p>A diferencia de PHP o Apache, en Node.js nosotros mismos levantamos el servidor usando el módulo <code>http</code>. Aquí tienes el código base:</p>
-            
-            <div class="code-block">
-                <div class="code-header">server.js</div>
-                <pre><code>const http = require('http');
-
-const server = http.createServer((req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('¡Hola, Backend desde Node.js!');
-});
-
-server.listen(3000, () => {
-    console.log('Servidor corriendo en el puerto 3000');
-});</code></pre>
-            </div>
-            <div class="module-navigation">
-                <button class="next-btn" data-next="module2">Ir al Módulo 2 <i class="fas fa-arrow-right"></i></button>
+            <div class="module-navigation single-btn">
+                <button class="nav-module-btn next" data-navigate="module2">Ir al Módulo 2 <i class="fas fa-arrow-right"></i></button>
             </div>
         </section>
 
         <section id="module2" class="content-section">
             <span class="module-tag">Módulo 2</span>
-            <h2>Express y APIs REST</h2>
+            <h2>Node.js desde Cero</h2>
             <p>Contenido en construcción...</p>
+            
             <div class="module-navigation">
-                <button class="next-btn" data-next="module3">Ir al Módulo 3 <i class="fas fa-arrow-right"></i></button>
+                <button class="nav-module-btn prev" data-navigate="module1"><i class="fas fa-arrow-left"></i> Anterior</button>
+                <button class="nav-module-btn next" data-navigate="module3">Ir al Módulo 3 <i class="fas fa-arrow-right"></i></button>
             </div>
         </section>
 
         <section id="module3" class="content-section">
             <span class="module-tag">Módulo 3</span>
-            <h2>Bases de Datos con MongoDB</h2>
+            <h2>Creación de APIs REST con Express</h2>
             <p>Contenido en construcción...</p>
             
             <div class="module-navigation">
-                <button class="next-btn" data-next="course-completed">Finalizar Curso <i class="fas fa-check-circle"></i></button>
+                <button class="nav-module-btn prev" data-navigate="module2"><i class="fas fa-arrow-left"></i> Anterior</button>
+                <button class="nav-module-btn next" data-navigate="module4">Ir al Módulo 4 <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </section>
+
+        <section id="module4" class="content-section">
+            <span class="module-tag">Módulo 4</span>
+            <h2>Bases de Datos (SQL y MongoDB)</h2>
+            <p>Contenido en construcción...</p>
+            
+            <div class="module-navigation">
+                <button class="nav-module-btn prev" data-navigate="module3"><i class="fas fa-arrow-left"></i> Anterior</button>
+                <button class="nav-module-btn next" data-navigate="module5">Ir al Módulo 5 <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </section>
+
+        <section id="module5" class="content-section">
+            <span class="module-tag">Módulo 5</span>
+            <h2>Autenticación y Seguridad</h2>
+            <p>Contenido en construcción...</p>
+            
+            <div class="module-navigation">
+                <button class="nav-module-btn prev" data-navigate="module4"><i class="fas fa-arrow-left"></i> Anterior</button>
+                <button class="nav-module-btn next" data-navigate="module6">Ir al Módulo 6 <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </section>
+
+        <section id="module6" class="content-section">
+            <span class="module-tag">Módulo 6</span>
+            <h2>Arquitectura Backend Profesional</h2>
+            <p>Contenido en construcción...</p>
+            
+            <div class="module-navigation">
+                <button class="nav-module-btn prev" data-navigate="module5"><i class="fas fa-arrow-left"></i> Anterior</button>
+                <button class="nav-module-btn next" data-navigate="course-completed">Finalizar Curso <i class="fas fa-check-circle"></i></button>
             </div>
         </section>
 
         <section id="course-completed" class="content-section">
             <div class="completion-container">
                 <h2>¡Felicidades, has finalizado el curso! 🎉</h2>
-                <p>Espero que hayas disfrutado y aprendido mucho sobre Node.js.</p>
+                <p>Espero que hayas disfrutado y aprendido mucho sobre Desarrollo Backend</p>
                 <p>Tu opinión es muy importante para seguir mejorando. Por favor, envía tus comentarios, dudas o feedback a mi correo:</p>
-                <a href="mailto:tu-correo@ejemplo.com" class="email-link">
-                    <i class="fas fa-envelope"></i> tu-correo@ejemplo.com
+                <a href="mailto:tacevedo@unal.edu.co" class="email-link">
+                    <i class="fas fa-envelope"></i> tacevedo@unal.edu.co
                 </a>
             </div>
         </section>
