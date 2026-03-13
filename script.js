@@ -1,7 +1,47 @@
-document.addEventListener("DOMContentLoaded", () => {
+// =======================================================================
+// 1. FUNCIÓN PARA CARGAR COMPONENTES HTML
+// =======================================================================
+async function cargarComponente(idContenedor, rutaArchivo) {
+    try {
+        const respuesta = await fetch(rutaArchivo);
+        if (!respuesta.ok) throw new Error(`Error al cargar ${rutaArchivo}`);
+        const html = await respuesta.text();
+        document.getElementById(idContenedor).innerHTML = html;
+    } catch (error) {
+        console.error("Hubo un problema inyectando el componente:", error);
+    }
+}
+
+// =======================================================================
+// 2. INICIALIZACIÓN PRINCIPAL (Cuando carga la página)
+// =======================================================================
+document.addEventListener("DOMContentLoaded", async () => {
     
-    // ================= SELECTORES DEL DOM =================
-    // Elementos del menú y navegación
+    // A. Cargar todos los componentes primero (usamos await para asegurar el orden)
+    await cargarComponente("header-container", "components/Header.html");
+    await cargarComponente("sidebar-container", "components/Sidebar.html");
+    await cargarComponente("home-container", "components/Home.html");
+    await cargarComponente("module1-container", "components/Module1.html");
+    await cargarComponente("module2-container", "components/Module2.html");
+    await cargarComponente("module3-container", "components/Module3.html");
+    await cargarComponente("module4-container", "components/Module4.html");
+    await cargarComponente("module5-container", "components/Module5.html");
+    await cargarComponente("module6-container", "components/Module6.html");
+    await cargarComponente("course-completed-container", "components/CourseCompleted.html");
+    await cargarComponente("modal-container", "components/ResourceModal.html");
+
+    // B. Ahora que todo el HTML existe en el DOM, inicializamos la lógica
+    inicializarEventosDelCurso(); 
+});
+
+
+// =======================================================================
+// 3. LÓGICA DEL CURSO E INTERACTIVIDAD
+// =======================================================================
+function inicializarEventosDelCurso() {
+    
+    // --- SELECTORES DEL DOM ---
+    // (Ahora sí van a encontrar los elementos porque ya fueron inyectados)
     const menuBtn = document.getElementById("menu-btn");
     const closeBtn = document.getElementById("close-btn");
     const sidebar = document.getElementById("sidebar");
@@ -9,45 +49,45 @@ document.addEventListener("DOMContentLoaded", () => {
     const navLinks = document.querySelectorAll("#nav-links a");
     const sections = document.querySelectorAll(".content-section");
     
-    // Elementos del encabezado y botones de inicio
     const logoLink = document.getElementById("logo-link");
     const homeBtn = document.getElementById("home-btn");
     const startCourseBtn = document.getElementById("start-course-btn");
 
-    // Elementos de la ventana emergente (Modal)
     const resourceBtns = document.querySelectorAll(".resource-btn");
     const modalAlert = document.getElementById("resource-modal");
     const closeModalBtnAlert = document.querySelector(".close-modal");
     const modalTitle = document.getElementById("modal-title");
     const modalLink = document.getElementById("modal-link");
+    const navModuleBtns = document.querySelectorAll(".nav-module-btn");
 
-
-    // ================= 1. LÓGICA DEL MENÚ LATERAL (SIDEBAR) =================
+    // --- LÓGICA DEL MENÚ LATERAL (SIDEBAR) ---
     function openMenu() {
-        sidebar.classList.add("open");
-        overlay.classList.add("active");
+        if(sidebar && overlay) {
+            sidebar.classList.add("open");
+            overlay.classList.add("active");
+        }
     }
 
     function closeMenu() {
-        sidebar.classList.remove("open");
-        overlay.classList.remove("active");
+        if(sidebar && overlay) {
+            sidebar.classList.remove("open");
+            overlay.classList.remove("active");
+        }
     }
 
-    menuBtn.addEventListener("click", openMenu);
-    closeBtn.addEventListener("click", closeMenu);
-    overlay.addEventListener("click", closeMenu);
+    if (menuBtn) menuBtn.addEventListener("click", openMenu);
+    if (closeBtn) closeBtn.addEventListener("click", closeMenu);
+    if (overlay) overlay.addEventListener("click", closeMenu);
 
 
-    // ================= 2. NAVEGACIÓN ENTRE MÓDULOS =================
+    // --- NAVEGACIÓN DESDE EL MENÚ LATERAL ---
     navLinks.forEach(link => {
         link.addEventListener("click", function(e) {
             e.preventDefault();
             
-            // Actualizar estilo visual en el menú lateral
             navLinks.forEach(l => l.classList.remove("active-link"));
             this.classList.add("active-link");
 
-            // Cambiar la sección visible
             const targetId = this.getAttribute("data-target");
             sections.forEach(section => {
                 if (section.id === targetId) {
@@ -57,97 +97,80 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            // Auto-cerrar menú en dispositivos móviles
             if (window.innerWidth <= 768) {
                 closeMenu();
             }
 
-            // Scroll suave hacia arriba al cambiar de módulo
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     });
 
 
-    // ================= 3. LÓGICA DE LA VENTANA EMERGENTE (MODAL) =================
-    // Abrir modal e inyectar datos dinámicos
-    resourceBtns.forEach(btn => {
-        btn.addEventListener("click", function() {
-            const title = this.getAttribute("data-title");
-            const link = this.getAttribute("data-link");
-            
-            modalTitle.textContent = title;
-            modalLink.href = link;
-            
-            modalAlert.classList.add("active");
+    // --- VENTANA EMERGENTE (MODAL) ---
+    if(modalAlert && modalTitle && modalLink) {
+        resourceBtns.forEach(btn => {
+            btn.addEventListener("click", function() {
+                modalTitle.textContent = this.getAttribute("data-title");
+                modalLink.href = this.getAttribute("data-link");
+                modalAlert.classList.add("active");
+            });
         });
-    });
 
-    // Cerrar modal con el botón X
-    closeModalBtnAlert.addEventListener("click", () => {
-        modalAlert.classList.remove("active");
-    });
-
-    // Cerrar modal al hacer clic en el fondo oscuro
-    modalAlert.addEventListener("click", (e) => {
-        if (e.target === modalAlert) {
-            modalAlert.classList.remove("active");
+        if (closeModalBtnAlert) {
+            closeModalBtnAlert.addEventListener("click", () => {
+                modalAlert.classList.remove("active");
+            });
         }
-    });
+
+        modalAlert.addEventListener("click", (e) => {
+            if (e.target === modalAlert) {
+                modalAlert.classList.remove("active");
+            }
+        });
+    }
 
 
-    // ================= 4. BOTONES PARA IR AL INICIO Y EMPEZAR CURSO =================
-    
-    // Función centralizada para volver al inicio
+    // --- BOTONES DE INICIO Y "EMPEZAR CURSO" ---
     function goToHome() {
         sections.forEach(section => section.classList.remove("active"));
-        document.getElementById("home").classList.add("active");
+        const homeSection = document.getElementById("home");
+        if (homeSection) homeSection.classList.add("active");
+        
         navLinks.forEach(l => l.classList.remove("active-link"));
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Asignar función al Logo y botón "Inicio"
     if (logoLink) logoLink.addEventListener("click", goToHome);
     if (homeBtn) homeBtn.addEventListener("click", goToHome);
 
-    // Lógica especial para el botón "Iniciar Curso"
     if (startCourseBtn) {
         startCourseBtn.addEventListener("click", () => {
-            // Ocultar todas las secciones y mostrar el módulo 1
             sections.forEach(section => section.classList.remove("active"));
-            document.getElementById("module1").classList.add("active");
+            const module1 = document.getElementById("module1");
+            if(module1) module1.classList.add("active");
             
-            // Marcar visualmente el Módulo 1 en el menú
             navLinks.forEach(l => l.classList.remove("active-link"));
             const module1Link = document.querySelector('a[data-target="module1"]');
-            if (module1Link) {
-                module1Link.classList.add("active-link");
-            }
+            if (module1Link) module1Link.classList.add("active-link");
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
 
-    // ================= 5. NAVEGACIÓN ENTRE MÓDULOS (ANTERIOR / SIGUIENTE) =================
-    const navModuleBtns = document.querySelectorAll(".nav-module-btn");
-
+    // --- NAVEGACIÓN ENTRE MÓDULOS (BOTONES ANTERIOR / SIGUIENTE) ---
     navModuleBtns.forEach(btn => {
         btn.addEventListener("click", function() {
-            // Obtenemos a qué módulo debemos ir leyendo el 'data-navigate'
             const targetId = this.getAttribute("data-navigate");
             
-            // 1. Ocultamos todas las secciones
             sections.forEach(section => section.classList.remove("active"));
             
-            // 2. Mostramos la sección destino
             const targetSection = document.getElementById(targetId);
             if (targetSection) {
                 targetSection.classList.add("active");
             }
             
-            // 3. Quitamos la selección del menú lateral
             navLinks.forEach(l => l.classList.remove("active-link"));
             
-            // 4. Si NO es la pantalla final, iluminamos el módulo correspondiente en el menú
             if (targetId !== "course-completed") {
                 const targetLink = document.querySelector(`a[data-target="${targetId}"]`);
                 if (targetLink) {
@@ -155,8 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
             
-            // 5. Scroll suave hacia arriba
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     });
-});
+}

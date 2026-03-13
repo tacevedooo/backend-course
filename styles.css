@@ -9,6 +9,8 @@
     --text-secondary: #94a3b8;
     --accent-color: #3b82f6;
     --accent-hover: #2563eb;
+    --border-color: #334155;
+    --error-color: #ef4444;
 }
 
 * {
@@ -39,7 +41,7 @@ header {
     padding: 1.5rem 5%;
     background-color: rgba(15, 23, 42, 0.9);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid #334155;
+    border-bottom: 1px solid var(--border-color);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -104,7 +106,7 @@ header {
 .sidebar {
     position: fixed;
     top: 0;
-    right: -350px;
+    right: -350px; /* Oculto por defecto */
     width: 350px;
     height: 100vh;
     background-color: var(--surface-color);
@@ -124,7 +126,7 @@ header {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-    border-bottom: 1px solid #334155;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 1rem;
 }
 
@@ -138,7 +140,7 @@ header {
 }
 
 .close-btn:hover {
-    color: #ef4444;
+    color: var(--error-color);
 }
 
 .sidebar ul {
@@ -162,11 +164,12 @@ header {
 .sidebar ul li a:hover, 
 .sidebar ul li a.active-link {
     color: var(--text-primary);
-    background-color: #334155;
+    background-color: var(--border-color);
     padding-left: 1rem;
     border-left: 4px solid var(--accent-color);
 }
 
+/* Fondo oscuro al abrir el menú */
 .overlay {
     position: fixed;
     top: 0;
@@ -200,7 +203,7 @@ header {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Hero Section */
+/* Hero Section (Inicio) */
 .hero {
     text-align: center;
     margin-bottom: 4rem;
@@ -233,7 +236,7 @@ header {
 .content-section h2 {
     font-size: 2.5rem;
     margin: 1rem 0 2rem 0;
-    border-bottom: 2px solid #334155;
+    border-bottom: 2px solid var(--border-color);
     padding-bottom: 0.5rem;
 }
 
@@ -249,18 +252,17 @@ header {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
     margin-top: 2rem;
-    align-items: stretch; /* Asegura que todas las tarjetas tengan el mismo alto */
+    align-items: stretch;
 }
 
-/* REPARACIÓN DE ALINEACIÓN DE BOTONES */
 .summary-card {
     background-color: var(--surface-color);
     padding: 1.5rem;
     border-radius: 12px;
-    border: 1px solid #334155;
+    border: 1px solid var(--border-color);
     transition: transform 0.3s ease;
-    display: flex;         /* Habilita flexbox interno */
-    flex-direction: column; /* Coloca elementos uno debajo del otro */
+    display: flex;
+    flex-direction: column; 
 }
 
 .summary-card:hover {
@@ -273,13 +275,13 @@ header {
 }
 
 .summary-card p {
-    flex-grow: 1; /* Ocupa todo el espacio restante empujando el botón hacia abajo */
+    flex-grow: 1; 
     margin-bottom: 1.5rem;
 }
 
 /* Botones dentro de tarjetas */
 .resource-btn {
-    margin-top: auto; /* Fuerza al botón a anclarse en la parte inferior */
+    margin-top: auto; 
     padding: 8px 12px;
     background-color: transparent;
     color: var(--accent-color);
@@ -362,7 +364,7 @@ header {
     max-width: 450px;
     position: relative;
     text-align: center;
-    border: 1px solid #334155;
+    border: 1px solid var(--border-color);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
     transform: scale(0.8);
     transition: transform 0.3s ease;
@@ -383,7 +385,7 @@ header {
 }
 
 .close-modal:hover {
-    color: #ef4444;
+    color: var(--error-color);
 }
 
 .modal-content h3 {
@@ -439,15 +441,15 @@ header {
     border-radius: 8px;
     overflow: hidden;
     margin: 1.5rem 0;
-    border: 1px solid #334155;
+    border: 1px solid var(--border-color);
 }
 
 .code-header {
-    background-color: #1e293b;
+    background-color: var(--surface-color);
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
     color: var(--text-secondary);
-    border-bottom: 1px solid #334155;
+    border-bottom: 1px solid var(--border-color);
     font-family: 'Fira Code', monospace;
 }
 
@@ -462,23 +464,20 @@ code {
     color: #38bdf8;
 }
 
-
 /* ================= NAVEGACIÓN ENTRE MÓDULOS ================= */
 .module-navigation {
     margin-top: 3rem;
     padding-top: 2rem;
-    border-top: 1px solid #334155;
+    border-top: 1px solid var(--border-color);
     display: flex;
-    justify-content: space-between; /* Separa los botones a los extremos */
+    justify-content: space-between;
     align-items: center;
 }
 
-/* Cuando solo hay un botón (Módulo 1), lo tiramos a la derecha */
 .module-navigation.single-btn {
     justify-content: flex-end;
 }
 
-/* Estilos base para ambos botones */
 .nav-module-btn {
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
@@ -492,7 +491,6 @@ code {
     gap: 8px;
 }
 
-/* Estilo para el botón Siguiente (Principal) */
 .nav-module-btn.next {
     background-color: var(--accent-color);
     color: #ffffff;
@@ -504,15 +502,14 @@ code {
     transform: translateX(4px);
 }
 
-/* Estilo para el botón Anterior (Secundario) */
 .nav-module-btn.prev {
     background-color: transparent;
     color: var(--text-secondary);
-    border: 1px solid #334155;
+    border: 1px solid var(--border-color);
 }
 
 .nav-module-btn.prev:hover {
-    background-color: #334155;
+    background-color: var(--border-color);
     color: var(--text-primary);
     transform: translateX(-4px);
 }
@@ -523,7 +520,7 @@ code {
     padding: 4rem 2rem;
     background-color: var(--surface-color);
     border-radius: 12px;
-    border: 1px solid #334155;
+    border: 1px solid var(--border-color);
     margin-top: 2rem;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
@@ -531,7 +528,7 @@ code {
 .completion-container h2 {
     color: var(--accent-color);
     margin-bottom: 1rem;
-    border-bottom: none; /* Quitamos la línea inferior que tienen los otros h2 */
+    border-bottom: none;
     font-size: 2.2rem;
 }
 
@@ -545,7 +542,7 @@ code {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background-color: #334155;
+    background-color: var(--border-color);
     color: var(--text-primary);
     padding: 12px 24px;
     border-radius: 8px;
@@ -561,10 +558,20 @@ code {
     color: var(--accent-color);
 }
 
-
 /* ================= DISEÑO RESPONSIVO (MÓVILES) ================= */
 @media (max-width: 768px) {
     .sidebar { width: 100%; right: -100%; }
     .hero h1 { font-size: 2rem; }
     .header-controls { gap: 1rem; }
+    
+    /* Mejoras extra para móviles */
+    .module-navigation {
+        flex-direction: column-reverse;
+        gap: 1rem;
+    }
+    
+    .nav-module-btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
