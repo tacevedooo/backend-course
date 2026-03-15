@@ -1,8 +1,108 @@
 <section id="module1" class="content-section">
     <span class="module-tag">Módulo 1</span>
     <h2>Fundamentos del Backend</h2>
-    <p>Contenido en construcción...</p>
     
+    <h3>¿Qué es el Backend?</h3>
+    <p>El desarrollo backend se ocupa de las tecnologías responsables de almacenar y manipular de forma segura los datos del usuario. Es la parte asociada a toda la lógica oculta que impulsa las aplicaciones con las que interactúan los usuarios.</p>
+    
+    <h3>¿Cuál es la diferencia entre Frontend y Backend?</h3>
+    <p>Tanto el front end como el back end son aspectos críticos de cualquier aplicación. El front end es aquello que ven los usuarios e incluye elementos visuales, como botones, casillas de verificación, gráficos y mensajes de texto. Permite a los usuarios interactuar con la aplicación. El back-end son los datos y la infraestructura que permiten que la aplicación funcione. Almacena y procesa los datos de las aplicaciones para los usuarios.</p>
+    
+    <h3>¿Qué es la arquitectura cliente-servidor?</h3>
+    <p>La arquitectura cliente-servidor es un modelo muy utilizado en el desarrollo de aplicaciones. En este modelo existen dos componentes principales: el cliente, que solicita y utiliza los servicios, y el servidor, que proporciona esos servicios. Ambos se comunican a través de una red, generalmente mediante Internet.</p>
+    <p>En las aplicaciones web, el cliente suele ser el navegador, mientras que el servidor es el sistema donde se ejecutan las aplicaciones y se almacenan los datos. Actualmente, a la parte del servidor se le conoce como backend, y a la parte que interactúa con el usuario en el cliente se le llama frontend.</p>
+    
+    <img src="../images/ArquitecturaApp-Module1.jpg" alt="Imagen ilustrativa arquitectura de una aplicación" class="module-image">
+
+    <h2>El Ciclo de una Petición Web</h2>
+    <p>Todo comienza cuando el cliente realiza una acción (como hacer clic en un enlace). Esto genera una solicitud (Request) que viaja por internet hasta el servidor. El servidor recibe esta solicitud, la procesa (por ejemplo, buscando información en la base de datos) y devuelve una respuesta (Response) al cliente, que finalmente se muestra en pantalla.</p>
+
+    <h3>¿Qué es el protocolo HTTP/HTTPS?</h3>
+    <p>HTTP (HyperText Transfer Protocol) es el protocolo que permite la comunicación entre el cliente (navegador o aplicación) y el servidor en la web mediante un sistema de solicitudes y respuestas. Sin embargo, los datos se envían sin cifrado, por lo que pueden ser interceptados. HTTPS (HyperText Transfer Protocol Secure) es la versión segura que protege la comunicación mediante cifrado (SSL/TLS), asegurando que la información no pueda ser leída o modificada por externos.</p>
+    
+    <h3>Métodos HTTP</h3>
+    <p>Los métodos indican la intención de la solicitud. Los más utilizados en el backend son:</p>
+    <ul>
+        <li><strong>GET:</strong> Solicitar o leer datos (Ej. ver un perfil de usuario).</li>
+        <li><strong>POST:</strong> Enviar datos para crear un recurso nuevo (Ej. registrarse en una app).</li>
+        <li><strong>PUT:</strong> Actualizar por completo un recurso existente.</li>
+        <li><strong>PATCH:</strong> Actualizar parcialmente un recurso existente.</li>
+        <li><strong>DELETE:</strong> Eliminar un recurso.</li>
+    </ul>
+
+    <h3>Estructura: Headers y Body</h3>
+    <p>Las peticiones y respuestas HTTP tienen dos partes fundamentales: los <strong>Headers</strong> (cabeceras), que contienen metadatos de configuración (como el tipo de contenido o tokens de seguridad); y el <strong>Body</strong> (cuerpo), que transporta la carga útil de los datos, como la información de un formulario llenado por el usuario.</p>
+
+    <h3>Códigos de Estado (Status Codes)</h3>
+    <p>El servidor responde con un número de 3 dígitos que resume el resultado de la petición:</p>
+    <ul>
+        <li><strong>2xx (Éxito):</strong> La petición fue procesada correctamente (Ej. 200 OK, 201 Created).</li>
+        <li><strong>3xx (Redirección):</strong> Se requiere una acción adicional, como ir a otra URL.</li>
+        <li><strong>4xx (Errores del Cliente):</strong> Hubo un error en la solicitud (Ej. 400 Bad Request, 404 Not Found).</li>
+        <li><strong>5xx (Errores del Servidor):</strong> El servidor falló al procesar una petición válida (Ej. 500 Internal Server Error).</li>
+    </ul>
+
+    <h3>REST vs RPC</h3>
+    <p>Son los dos enfoques principales para diseñar APIs. <strong>REST</strong> se enfoca en "recursos" (sustantivos) y usa los métodos HTTP estándar para interactuar con ellos. <strong>RPC</strong> (Remote Procedure Call) se enfoca en "acciones" (verbos) y consiste en llamar funciones específicas del servidor remotamente, usualmente centralizando todo a través del método POST.</p>
+
+
+    <h3>¿Qué es el formato JSON?</h3>
+    <p>JSON (JavaScript Object Notation) es un formato de texto ligero, estructurado y fácil de leer, diseñado para el almacenamiento e intercambio de datos entre sistemas. Es el estándar moderno para enviar información entre un servidor y aplicaciones web.</p>
+    
+    <h3>¿Cómo se comunica el Frontend con el Backend?</h3>
+    <p>Ambos se comunican mediante el protocolo HTTP/HTTPS. El frontend envía solicitudes (requests) y el backend devuelve respuestas, usualmente en formato JSON. Esta interacción estructurada es lo que conocemos como una API (Interfaz de Programación de Aplicaciones).</p>
+    
+    <img src="../images/CicloPeticionWeb-Module1.jpg" alt="Imagen ilustrativa petición web" class="module-image">
+
+    <h2>Preparación del entorno Backend</h2>
+
+    <h3>¿Qué es Node.js?</h3>
+    <p>Durante mucho tiempo, JavaScript solo podía ejecutarse dentro de un navegador web (Frontend). Node.js revolucionó esto al proporcionar un entorno que permite ejecutar JavaScript directamente en el servidor (Backend). Es rápido, altamente escalable y utiliza un modelo "asíncrono", lo que lo hace excelente para construir APIs y manejar miles de conexiones simultáneas.</p>
+    
+    <div class="video-tutorial">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/UtD6HgIEs2I" title="Cómo instalar Node.js" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <div class="task-box" style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-top: 15px; margin-bottom: 25px; border-radius: 4px; color: #856404; font-family: sans-serif;">
+        <strong>🎯 Primera tarea:</strong> Descarga e instala Node.js en tu computadora. Para verificar que se instaló correctamente, abre tu terminal y ejecuta <code>node -v</code>.
+    </div>
+    
+    <h3>Gestores de paquetes: npm y yarn</h3>
+    <p>En el backend no programamos todo desde cero, aprovechamos librerías creadas por la comunidad. Para gestionarlas usamos gestores de paquetes. <strong>npm</strong> (Node Package Manager) viene instalado por defecto con Node.js y es el más utilizado, mientras que <strong>Yarn</strong> es una alternativa popular de alto rendimiento.</p>
+
+    <h3>Manejo de dependencias y Versionado Semántico</h3>
+    <p>Las librerías externas que usamos se conocen como "dependencias". Para evitar que una actualización externa rompa nuestro código, la industria usa el <strong>versionado semántico (SemVer)</strong>. Es un formato de tres números (por ejemplo: 2.1.4) que representan: versión <strong>Mayor</strong> (cambios que rompen compatibilidad), versión <strong>Menor</strong> (nuevas características compatibles) y <strong>Parche</strong> (correcciones de errores).</p>
+    
+     <div class="video-tutorial">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/lwrRWG-1waM" title="Iniciar entorno Backend con npm" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <div class="task-box" style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-top: 15px; margin-bottom: 25px; border-radius: 4px; color: #856404; font-family: sans-serif;">
+        <strong>🎯 Segunda tarea:</strong> Inicializa tu proyecto con nodejs.
+    </div>
+
+    <h3>Git, GitHub y Flujo de trabajo</h3>
+    <p><strong>Git</strong> es un sistema de control de versiones que actúa como una "máquina del tiempo" para tu código, guardando el historial de cada cambio. <strong>GitHub</strong> es una plataforma en la nube donde alojamos nuestros repositorios de Git para tener respaldos y colaborar con otros desarrolladores.</p>
+    <p>El flujo de trabajo profesional básico consiste en: crear una rama aislada (<em>branch</em>), guardar nuestros cambios localmente (<em>commit</em>), subirlos a la nube (<em>push</em>) y finalmente solicitar que nuestro código se fusione con el proyecto principal (<em>Pull Request</em>).</p>
+
+    <div class="video-tutorial">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/eQMcIGVc8N0" title="Crear repositorio y subir proyecto con Git" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <div class="task-box" style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-top: 15px; margin-bottom: 25px; border-radius: 4px; color: #856404; font-family: sans-serif;">
+        <strong>🎯 Tercera tarea:</strong> Crea una cuenta en GitHub (si aún no la tienes), crea un nuevo repositorio vacío y enlaza tu proyecto local.
+    </div>
+
+    <div class="task-summary-box" style="background-color: #d4edda; border-left: 5px solid #28a745; padding: 20px; margin-top: 40px; margin-bottom: 30px; border-radius: 4px; color: #155724; font-family: sans-serif;">
+        <h3 style="margin-top: 0; color: #155724; font-size: 1.2em;">✅ Checklist del Módulo 1</h3>
+        <p>Para dar por finalizado este capítulo y estar listo para el siguiente, asegúrate de haber cumplido con estas tareas prácticas:</p>
+        <ul style="margin-bottom: 0; padding-left: 20px;">
+    <li style="margin-bottom: 8px;"><strong>1. Instalación:</strong> Haber descargado e instalado Node.js y verificado con <code>node -v</code>.</li>
+    <li style="margin-bottom: 8px;"><strong>2. Inicialización:</strong> Haber creado la carpeta de tu proyecto y generado el archivo <code>package.json</code>.</li>
+    <li style="margin-bottom: 8px;"><strong>3. Control de versiones:</strong> Haber creado tu repositorio en GitHub, vinculado tu carpeta local y subido tus cambios.</li>
+</ul>
+    </div>
+
     <div class="module-navigation single-btn">
         <button class="nav-module-btn next" data-navigate="module2">Ir al Módulo 2 <i class="fas fa-arrow-right"></i></button>
     </div>

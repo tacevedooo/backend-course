@@ -575,3 +575,37 @@ code {
         justify-content: center;
     }
 }
+
+/* ================= DISEÑO IMÁGENES DE CADA MÓDULO ================= */
+
+.module-image{
+    display: block;
+    margin: 40px auto;     /* centra la imagen */
+    max-width: 600px;      /* tamaño máximo */
+    width: 80%;            /* adaptable */
+    height: auto;
+    border-radius: 10px;   /* bordes suaves */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* sombra profesional */
+}
+
+/* ================= DISEÑO VIDEOS DE CADA MÓDULO ================= */
+
+/* Contenedor del video */
+.video-tutorial {
+    display: flex;
+    justify-content: center;
+    margin: 30px auto; /* Centra el contenedor y le da espacio arriba y abajo */
+    width: 100%;
+    max-width: 800px; /* Evita que el video se vea gigante en pantallas muy grandes */
+    border-radius: 12px; /* Bordes redondeados para un toque moderno */
+    overflow: hidden; /* Asegura que el iframe respete los bordes redondeados */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* Sombra elegante para resaltar el video */
+}
+
+/* El iframe del video de YouTube */
+.video-tutorial iframe {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9; /* Mantiene la proporción perfecta de YouTube automáticamente */
+    border: none; /* Elimina cualquier borde por defecto */
+}
