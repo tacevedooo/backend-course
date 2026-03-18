@@ -1,8 +1,300 @@
 <section id="module2" class="content-section">
     <span class="module-tag">Módulo 2</span>
-    <h2>Node.js desde Cero</h2>
-    <p>Contenido en construcción...</p>
+    <h2>Node.js y Express</h2>
     
+    <h3>¿Qué es Node.js?</h3>
+    <p>Node.js es un entorno de ejecución de JavaScript (runtime) orientado a eventos y diseñado para construir aplicaciones 
+        de red escalables. A diferencia del JavaScript tradicional que corre en el navegador, Node.js permite ejecutar código
+        en el servidor. Su característica principal es que es asíncrono y no bloqueante, lo que significa que puede manejar miles 
+        de conexiones simultáneas sin detenerse a esperar que una tarea (como leer un archivo o consultar una base de datos) termine 
+        para empezar la siguiente.</p>
+    
+    <h3>¿Cómo funciona la arquitectura de Node.js?</h3>
+    <p>A diferencia de los servidores tradicionales que asignan un hilo de memoria por cada usuario, Node.js opera con un hilo único 
+        principal que nunca se detiene a esperar. Su arquitectura se basa en un bucle de eventos (Event Loop) que actúa como un gestor 
+        de tráfico: recibe todas las peticiones y, si alguna requiere una tarea pesada (como leer un disco o una base de datos), la delega 
+        al sistema operativo o a un pool de hilos interno mediante I/O no bloqueante. Esto permite que el hilo principal quede libre de 
+        inmediato para seguir atendiendo a otros usuarios, retomando la tarea anterior mediante un callback solo cuando el resultado está 
+        listo, logrando así una alta escalabilidad con un consumo mínimo de recursos.</p>
+    
+            <img src="../images/NodeJSArchitecture.jpg" alt="Arquitectura de Node.js" class="module-image">
+
+
+  <h2>Del HTTP puro a Express.js</h2>
+  <p>
+    Aunque el módulo <code>http</code> de Node.js es potente, funciona a muy bajo nivel. 
+    En aplicaciones reales, esto presenta dificultades críticas:
+  </p>
+  
+  <ul>
+    <li>
+      <strong>Gestión de rutas manual:</strong> Requiere escribir estructuras <code>if/else</code> 
+      o <code>switch</code> gigantes para validar cada URL y método (GET, POST, etc.).
+    </li>
+    <li>
+      <strong>Parseo complejo:</strong> Extraer datos del cuerpo (JSON) o parámetros de la 
+      URL implica escribir mucho código repetitivo y propenso a errores.
+    </li>
+    <li>
+      <strong>Código verboso:</strong> Tareas simples, como enviar archivos o gestionar 
+      errores, ensucian la lógica principal del archivo.
+    </li>
+    <li>
+      <strong>Escalabilidad limitada:</strong> A medida que el proyecto crece, el código 
+      se vuelve difícil de mantener sin una estructura de <em>framework</em>.
+    </li>
+  </ul>
+
+    <h3>¿Qué es Express.js?</h3>
+    <p>Express es el framework web estándar para Node.js. Se define como un marco "minimalista y flexible" 
+        que añade una capa de herramientas sencillas sobre las funcionalidades nativas de Node, sin ocultar sus características 
+        principales.</p>
+
+
+  <h3>¿Por qué se usa Express?</h3>
+  <ul>
+    <li>
+      <strong>Middleware:</strong> Permite ejecutar funciones intermedias (logueo, seguridad, validación) de forma organizada.
+    </li>
+    <li>
+      <strong>Enrutamiento sencillo:</strong> Define rutas claras como <code>app.get('/usuarios', ...)</code> en lugar de analizar strings de URL.
+    </li>
+    <li>
+      <strong>Productividad:</strong> Reduce drásticamente la cantidad de código repetitivo (<em>boilerplate</em>) necesario para levantar una API.
+    </li>
+    <li>
+      <strong>Ecosistema:</strong> Es compatible con miles de paquetes y tiene la comunidad más grande de Node.js.
+    </li>
+  </ul>
+
+
+
+  <h3>Instalación</h3>
+  <p>
+    Para comenzar un proyecto con Express debes instalar el paquete vía <strong>npm</strong>:
+  </p>
+
+  <div class="code-block">
+    <div class="code-header">Terminal</div>
+    <pre><code># Instalar Express
+npm install express</code></pre>
+  </div>
+
+
+  <h3>Tu primer servidor</h3>
+  <p>Una vez instalado, crea un archivo <code>index.js</code> y añade el siguiente código base:</p>
+
+  <div class="code-block">
+    <div class="code-header">index.js</div>
+    <pre><code>// 1. Importar express
+const express = require('express');
+
+// 2. Inicializar la aplicación
+const app = express();
+const port = 3000;
+
+// 3. Definir una ruta (Endpoint)
+app.get('/', (req, res) => {
+  res.send('¡Hola Mundo desde Express!');
+});
+
+// 4. Escuchar peticiones en el puerto 3000
+app.listen(port, () => {
+  console.log(`Servidor corriendo en http://localhost:${port}`);
+}); </code></pre>
+  </div>
+
+
+<h3>Cómo encender y probar tu servidor</h3>
+<p>
+    Para ver tu código en acción, sigue estos pasos desde la terminal de tu proyecto:
+</p>
+
+<div class="code-block">
+    <div class="code-header">Terminal</div>
+    <pre><code># Ejecuta el archivo principal
+node index.js</code></pre>
+</div>
+
+<p>
+    Si ves el mensaje <code>Servidor corriendo en http://localhost:3000</code>, ¡ya está al aire!
+</p>
+
+<h3>Probar en el navegador</h3>
+<p>
+    Abre tu navegador (Chrome, Firefox, etc.) y escribe en la barra de direcciones: 
+    <br><code>http://localhost:3000</code>
+</p>
+
+
+
+<div class="task-box" style="background-color: #e2e3e5; border-left: 5px solid #383d41; padding: 15px; margin-top: 15px; border-radius: 4px; color: #383d41;">
+    <strong>💡 Tip Pro:</strong> Para detener el servidor en la terminal, presiona <code>Ctrl + C</code>. Recuerda que debes reiniciarlo cada vez que hagas un cambio en el código para que surta efecto.
+</div>
+
+    <h3>Routing en Express</h3>
+    <p>
+        El routing en Express es la forma en que definimos 
+        qué debe hacer el servidor cuando recibe una petición en una URL específica.
+    </p>
+
+    <p>
+        En otras palabras, el routing permite decirle al backend:
+        <br><br>
+        <em>“Si alguien entra a esta ruta, responde esto”</em>
+    </p>
+  
+     <h3>Ejemplo básico</h3>
+
+    <div class="code-block">
+        <div class="code-header">index.js</div>
+        <pre><code>app.get("/", (req, res) => {
+  res.send("Hola mundo");
+});</code></pre>
+    </div>
+
+    <p>
+        Esto significa:
+    </p>
+
+    <ul>
+        <li>Cuando alguien visite <strong>http://localhost:3000/</strong></li>
+        <li>El servidor responde: <strong>"Hola mundo"</strong></li>
+    </ul>
+
+    <h3>Tipos de rutas más comunes</h3>
+
+    <div class="code-block">
+        <div class="code-header">Ejemplos de Métodos HTTP</div>
+        <pre><code>app.get("/users", (req, res) => {
+  res.send("Obtener usuarios");
+});
+
+app.post("/users", (req, res) => {
+  res.send("Crear usuario");
+});
+
+app.put("/users/:id", (req, res) => {
+  res.send("Actualizar usuario");
+});
+
+app.delete("/users/:id", (req, res) => {
+  res.send("Eliminar usuario");
+});</code></pre>
+    </div>
+    </code></pre>
+
+
+
+    <h2>Middlewares en Express</h2>
+    <p>
+        Un <strong>middleware</strong> es simplemente una función que se ejecuta <strong>en medio</strong> de una petición (Request) y una respuesta (Response). Tienen acceso al objeto de la petición, al objeto de la respuesta y a la siguiente función de middleware en el ciclo de vida de la solicitud.
+    </p>
+
+    <p>
+        Imagina que el middleware es un <strong>punto de control</strong> o una aduana: puede revisar si el usuario tiene permiso para pasar, transformar los datos que llegan, o simplemente registrar qué está pasando en el servidor.
+    </p>
+
+    <h3>1. Middleware Global</h3>
+    <p>
+        Se define con <code>app.use()</code> y se ejecuta para <strong>todas</strong> las rutas de tu aplicación. Es ideal para tareas como logueo de peticiones o configuración de seguridad.
+    </p>
+
+    <div class="code-block">
+        <div class="code-header">index.js</div>
+        <pre><code>// Este código se ejecuta en cada petición
+app.use((req, res, next) => {
+  console.log(`Nueva petición recibida: ${req.method} ${req.url}`);
+  
+  // ¡Importante! Pasar al siguiente paso
+  next(); 
+});</code></pre>
+    </div>
+
+    <h3>2. Middleware de Ruta</h3>
+    <p>
+        A veces solo necesitas que un middleware se ejecute en una ruta específica (por ejemplo, para revisar si alguien está logueado antes de dejarlo ver su perfil).
+    </p>
+
+    <div class="code-block">
+        <div class="code-header">index.js</div>
+        <pre><code>const checkAuth = (req, res, next) => {
+  console.log("Revisando autenticación...");
+  next();
+};
+
+// Solo se ejecuta checkAuth cuando entran a /dashboard
+app.get("/dashboard", checkAuth, (req, res) => {
+  res.send("Bienvenido a tu panel");
+});</code></pre>
+    </div>
+
+    <h3>Ejemplo gráfico de Middlewares</h3>
+    <img src="../images/middlewares-Module2.jpg" alt="Middlewares en Express" class="module-image">
+
+
+    <h2>¡Manos a la obra! Proyecto Práctico</h2>
+    <p>
+        Es momento de aplicar todo lo aprendido. Vamos a construir una <strong>API de Gestión de Usuarios</strong>. No te preocupes por la base de datos aún, usaremos un arreglo en memoria para simularla.
+    </p>
+
+    <div class="code-block">
+        <div class="code-header">Reto: User-API Express</div>
+        <pre><code>// 1. Crea un array de usuarios (data inicial)
+let users = [
+  { id: 1, name: "Ana" },
+  { id: 2, name: "Santiago" }
+];
+
+// 2. Middleware de Registro (Logger)
+// Crea un middleware que imprima en consola la fecha y la ruta de cada petición.
+
+// 3. Rutas (Endpoints)
+// GET    /users     -> Devuelve el array de usuarios.
+// POST   /users     -> Agrega un nuevo usuario al array.
+// PUT    /users/:id -> Modifica el nombre de un usuario existente.
+// DELETE /users/:id -> Elimina un usuario por su ID.
+</code></pre>
+    </div>
+
+    <div class="task-box" style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-top: 15px; margin-bottom: 25px; border-radius: 4px; color: #856404; font-family: sans-serif;">
+        <strong>🎯 Tarea del Módulo:</strong> Implementa los 4 métodos HTTP en tu servidor de Express y asegúrate de que el middleware de registro funcione correctamente antes de responder a cualquier ruta. Para la lógica interna del middleware y de cada ruta puedes apoyarte de la inteligencia artificial (solo asegúrate de entender bien los conceptos).
+    </div>
+
+    <div class="task-summary-box" style="background-color: #d4edda; border-left: 5px solid #28a745; padding: 20px; margin-top: 40px; margin-bottom: 30px; border-radius: 4px; color: #155724; font-family: sans-serif;">
+        <h3 style="margin-top: 0; color: #155724; font-size: 1.2em;">✅ Checklist del Módulo 2</h3>
+        <p>Antes de pasar al Módulo 3, asegúrate de haber cumplido con:</p>
+        <ul style="margin-bottom: 0; padding-left: 20px;">
+            <li style="margin-bottom: 8px;"><strong>1. Express Setup:</strong> Instalaste el framework y levantaste un servidor escuchando en un puerto específico.</li>
+            <li style="margin-bottom: 8px;"><strong>2. Dominio de Rutas:</strong> Definiste correctamente los métodos GET, POST, PUT y DELETE.</li>
+            <li style="margin-bottom: 8px;"><strong>3. Lógica de Middleware:</strong> Implementaste al menos un middleware funcional (global o de ruta) y entendiste el uso de <code>next()</code>.</li>
+            <li style="margin-bottom: 8px;"><strong>4. Persistencia Temporal:</strong> Lograste manipular datos (crear, leer, borrar) dentro de un arreglo en memoria.</li>
+        </ul>
+    </div>
+
+    <details class="references-section" style="margin-bottom: 30px; padding: 0px; font-family: sans-serif;">
+    <summary style="font-weight: normal; cursor: pointer; color: white; outline: none;">Referencias Bibliográficas y Lecturas Recomendadas</summary>
+    <div style="margin-top: 15px; font-size: 0.9em; color: white;">
+        <ul style="padding-left: 20px;">
+            <li style="margin-bottom: 8px;">
+                <em>Curso de Node.js y Express (Introducción)</em>. Recuperado de <a href="https://www.youtube.com/watch?v=1hpc70_OoAg" target="_blank" rel="noopener noreferrer" style="color: #4da6ff;">YouTube</a>
+            </li>
+            
+            <li style="margin-bottom: 8px;">
+                OpenJS Foundation. (s.f.). <em>Acerca de Node.js</em>. Recuperado de <a href="https://nodejs.org/es/about" target="_blank" rel="noopener noreferrer" style="color: #4da6ff;">Node.js Oficial</a>
+            </li>
+            
+            <li style="margin-bottom: 8px;">
+                ExpressJS. (s.f.). <em>Guía de Direccionamiento (Routing)</em>. Recuperado de <a href="https://expressjs.com/en/guide/routing.html" target="_blank" rel="noopener noreferrer" style="color: #4da6ff;">ExpressJS Guide</a>
+            </li>
+            
+            <li style="margin-bottom: 8px;">
+                MDN Web Docs. (2023). <em>Introducción a Express y Node.js</em>. Recuperado de <a href="https://developer.mozilla.org/es/docs/Learn_web_development/Extensions/Server-side/Express_Nodejs/Introduction" target="_blank" rel="noopener noreferrer" style="color: #4da6ff;">MDN Developer</a>
+            </li>
+        </ul>
+    </div>
+</details>
+
     <div class="module-navigation">
         <button class="nav-module-btn prev" data-navigate="module1"><i class="fas fa-arrow-left"></i> Anterior</button>
         <button class="nav-module-btn next" data-navigate="module3">Ir al Módulo 3 <i class="fas fa-arrow-right"></i></button>
