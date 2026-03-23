@@ -1,8 +1,330 @@
 <section id="module3" class="content-section">
     <span class="module-tag">Módulo 3</span>
     <h2>Base de Datos (SQL y MongoDB)</h2>
-    <p>Contenido en construcción...</p>
     
+    <h3>¿Por qué necesitamos una Base de Datos?</h3>
+    <p>
+        En el módulo anterior, si reiniciabas tu servidor, todos los usuarios nuevos desaparecían. Esto sucede porque los datos se guardaban en la memoria RAM (volátil). 
+        Las Bases de Datos permiten la persistencia: los datos se graban en el disco y permanecen allí aunque el servidor se apague.
+    </p>
+    <img src="images/basededatos-Module3.jpg" alt="Diagrama de Bases de Datos" class="module-image">
+
+
+    <h3>Bases de datos estructuradas (SQL)</h3>
+
+        <div style="flex: 1; min-width: 300px;">
+            <p>Organizan la información en <strong>tablas</strong> con filas y columnas. Tienen una estructura fija (esquema) y son ideales cuando la consistencia es prioridad.</p>
+            
+            <div class="code-block">
+                <div class="code-header">Ejemplo estructurado (Tabla Usuarios)</div>
+                <pre><code>| id | nombre  | email            | telefono  |
+|----|---------|------------------|-----------|
+| 1  | Tomás   | tomas@email.com  | 555-0123  |
+| 2  | Lucía   | lucia@email.com  | NULL      |
+| 3  | Andrés  | andres@email.com | 555-9876  |</code></pre>
+            </div>
+        </div>
+
+        <h3>Bases de datos NO estructuradas (MongoDB)</h3>
+
+        <div style="flex: 1; min-width: 300px;">
+            <p>Organizan la información en <strong>documentos (JSON)</strong>. Tienen una estructura flexible; cada registro puede tener campos distintos sin afectar a los demás.</p>
+
+            <div class="code-block">
+                <div class="code-header">Ejemplo No estructurado (Colección Usuarios)</div>
+                <pre><code>[
+  { "name": "Tomás", "email": "tomas@email.com", "tel": "555-0123" },
+  { "name": "Lucía", "email": "lucia@email.com" },
+  { "name": "Andrés", "email": "andres@e.com", "premium": true }
+]</code></pre>
+            </div>
+    </div>
+
+    <h3>¿Qué base de datos usar en cada caso?</h3>
+<p>
+    La elección depende de la naturaleza de tus datos y la velocidad de desarrollo que necesites:
+</p>
+
+<div class="code-block">
+    <div class="code-header">Guía de Decisión Rápida</div>
+    <pre><code>| Escenario                    | Recomendación | ¿Por qué?                     |
+|------------------------------|---------------|-------------------------------|
+| Datos fijos y relaciones     | SQL (MySQL)   | Estructura clara y segura.    |
+| Prototipos y apps rápidas    | NoSQL (Mongo) | Flexibilidad total de campos. |
+| Gran volumen / Escalamiento  | NoSQL (Mongo) | Crecimiento horizontal fácil. |
+| Datos financieros / Complejos| SQL (Postgres)| Integridad y consistencia.    |</code></pre>
+</div>
+
+    <h3>Un recordatorio vital: ¿Qué es CRUD?</h3>
+    <p>
+        Independientemente del tipo de base de datos que elijas, el 90% de tu trabajo como desarrollador backend consistirá en gestionar las cuatro operaciones fundamentales de los datos:
+    </p>
+
+    <ul>
+        <li><strong>C (Create):</strong> Crear o insertar nuevos registros/documentos.</li>
+        <li><strong>R (Read):</strong> Leer o consultar datos existentes.</li>
+        <li><strong>U (Update):</strong> Actualizar o modificar información.</li>
+        <li><strong>D (Delete):</strong> Eliminar registros.</li>
+    </ul>
+
+    <p>
+        Ahora veremos cómo Node.js implementa estas operaciones en ambos mundos.
+    </p>
+
+    <h2>SQL con Node.js</h2>
+    <p>
+        Para trabajar con SQL (en este caso MySQL), necesitamos un "driver" o librería que nos permita enviar comandos SQL desde nuestro código JavaScript. Usaremos la librería <code>mysql2</code>.
+    </p>
+
+    <div class="code-block">
+        <div class="code-header">Instalación</div>
+        <pre><code>npm install mysql2</code></pre>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">Ejemplo básico (MySQL)</div>
+        <pre><code>const mysql = require("mysql2");
+
+// 1. Crear la conexión
+const connection = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "", // Tu contraseña de MySQL
+  database: "test" // El nombre de tu base de datos
+});
+
+// 2. Ejecutar una consulta (READ)
+connection.query("SELECT * FROM users", (err, results) => {
+  if (err) {
+    console.error("Error en la consulta:", err);
+    return;
+  }
+  console.log(results); // Aquí verás el arreglo de filas
+});</code></pre>
+    </div>
+
+    <div class="video-tutorial">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/27JCqmykNdc?t" title="Conectarse a una base de datos SQL" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <h2>MongoDB con Node.js</h2>
+    <p>
+        Para MongoDB, el enfoque es más "orientado a objetos" u "orientado a documentos". En lugar de escribir SQL puro, usaremos la librería <code>mongoose</code>, que actúa como un mapa entre nuestro código JS y los documentos de MongoDB, permitiéndonos definir "modelos" de datos.
+    </p>
+
+    <div class="code-block">
+        <div class="code-header">Instalación</div>
+        <pre><code>npm install mongoose</code></pre>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">Ejemplo con Mongoose</div>
+        <pre><code>const mongoose = require("mongoose");
+
+// 1. Conectar a la base de datos
+mongoose.connect("mongodb://localhost:27017/test")
+  .then(() => console.log("Conectado a MongoDB"))
+  .catch(err => console.error("Error de conexión", err));
+
+// 2. Definir el Modelo (Esquema de un usuario)
+const User = mongoose.model("User", {
+  name: String,
+  email: String
+});
+
+// 3. Crear un nuevo usuario (CREATE)
+const user = new User({
+  name: "Tomás",
+  email: "tomas@email.com"
+});
+
+// 4. Guardar en la base de datos
+user.save()
+  .then(() => console.log("Usuario guardado con éxito"))
+  .catch(err => console.error("Error al guardar", err));</code></pre>
+    </div>
+
+    <div class="video-tutorial">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/iN9wogzhjMU" title="Conectarse a una base de datos NO SQL" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <h2>Actividad Práctica: Persistencia Real</h2>
+<p>
+    Es hora de evolucionar tu proyecto del Módulo 2. Ya no usaremos <code>let users = [...]</code>. 
+    Ahora, tus usuarios vivirán en una base de datos real. Debes seleccionar entre MongoDB o MySQL 
+    (o cualquier otra base de datos que prefieras) y migrar tu código para que las operaciones CRUD 
+    interactúen con esa base de datos en lugar de un arreglo en memoria. 
+</p>
+
+<h3>Paso 1: Preparación del entorno</h3>
+<p>Asegúrate de tener el motor de base de datos corriendo en tu PC e instala la librería necesaria en tu terminal:</p>
+
+<div class="code-block">
+    <div class="code-header">Terminal</div>
+    <pre><code># MongoDB
+npm install mongoose
+
+# MySQL
+npm install mysql2</code></pre>
+</div>
+
+<h3>Paso 2: Configurar la conexión</h3>
+
+<h4>Opción 1: MongoDB (NoSQL)</h4>
+<div class="code-block">
+    <div class="code-header">index.js</div>
+    <pre><code>const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/mi_academia')
+  .then(() => console.log("¡Base de datos conectada!"))
+  .catch(err => console.error("Fallo de conexión", err));
+
+// Modelo
+const User = mongoose.model('User', {
+  name: String
+});</code></pre>
+</div>
+
+<h4>Opción 2: MySQL (SQL)</h4>
+<div class="code-block">
+    <div class="code-header">index.js</div>
+    <pre><code>const mysql = require('mysql2/promise');
+
+// Crear conexión
+const connection = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'mi_academia'
+});</code></pre>
+</div>
+
+<h3>Concepto Importante: async / await</h3>
+<p>
+    Cuando trabajamos con bases de datos, las operaciones no son instantáneas. Consultar, insertar o eliminar datos 
+    toma tiempo, ya que implica comunicación con otro sistema (la base de datos). 
+    Por eso usamos <code>async</code> y <code>await</code>.
+</p>    
+
+<h3>Paso 3: Migrar los Endpoints (CRUD)</h3>
+
+<h4>MongoDB (Mongoose)</h4>
+<div class="code-block">
+    <div class="code-header">index.js</div>
+    <pre><code>// GET
+app.get('/users', async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+});
+
+// POST
+app.post('/users', async (req, res) => {
+  const newUser = new User({ name: req.body.name });
+  await newUser.save();
+  res.status(201).send("Usuario creado");
+});
+
+// PUT
+app.put('/users/:id', async (req, res) => {
+  await User.findByIdAndUpdate(req.params.id, { name: req.body.name });
+  res.send("Usuario actualizado");
+});
+
+// DELETE
+app.delete('/users/:id', async (req, res) => {
+  await User.findByIdAndDelete(req.params.id);
+  res.send("Usuario eliminado");
+});</code></pre>
+</div>
+
+<h4>MySQL</h4>
+<div class="code-block">
+    <div class="code-header">index.js</div>
+    <pre><code>// GET
+app.get('/users', async (req, res) => {
+  const [rows] = await connection.query('SELECT * FROM users');
+  res.json(rows);
+});
+
+// POST
+app.post('/users', async (req, res) => {
+  await connection.query('INSERT INTO users (name) VALUES (?)', [req.body.name]);
+  res.status(201).send("Usuario creado");
+});
+
+// PUT
+app.put('/users/:id', async (req, res) => {
+  await connection.query('UPDATE users SET name = ? WHERE id = ?', 
+    [req.body.name, req.params.id]);
+  res.send("Usuario actualizado");
+});
+
+// DELETE
+app.delete('/users/:id', async (req, res) => {
+  await connection.query('DELETE FROM users WHERE id = ?', [req.params.id]);
+  res.send("Usuario eliminado");
+});</code></pre>
+</div>
+
+<h3>Paso 4: Prueba tu servidor</h3>
+<p>Para probar que tu servidor funciona, no basta con usar el navegador. Necesitas un Cliente API para enviar datos en formato JSON y probar los métodos POST, PUT y DELETE. Acá te dejo una recomendación: </p>
+
+<div class="video-tutorial">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/FQAQO90LoQU" title="Testear una API con Postman" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+<ol>
+    <li>Enciende tu servidor: <code>node index.js</code>.</li>
+    <li>Crea un usuario con POST.</li>
+    <li><strong>Apaga el servidor</strong>.</li>
+    <li>Vuelve a encenderlo y haz un GET.</li>
+</ol>
+
+<div class="task-box" style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-top: 15px; margin-bottom: 25px; border-radius: 4px; color: #856404; font-family: sans-serif;">
+    <strong>🎯 Tarea del Módulo:</strong> Migra completamente tu aplicación para usar una base de datos real (MongoDB o MySQL). Implementa los 4 métodos HTTP (GET, POST, PUT, DELETE) conectados a la base de datos y verifica que la información persista incluso después de reiniciar el servidor.
+</div>
+
+<div class="task-summary-box" style="background-color: #d4edda; border-left: 5px solid #28a745; padding: 20px; margin-top: 40px; margin-bottom: 30px; border-radius: 4px; color: #155724; font-family: sans-serif;">
+    <h3 style="margin-top: 0; color: #155724; font-size: 1.2em;">✅ Checklist del Módulo 3</h3>
+    <p>Antes de avanzar, asegúrate de:</p>
+    <ul style="margin-bottom: 0; padding-left: 20px;">
+        <li style="margin-bottom: 8px;"><strong>1. Conexión a DB:</strong> Lograste conectar correctamente tu servidor a MongoDB o MySQL.</li>
+        <li style="margin-bottom: 8px;"><strong>2. CRUD Persistente:</strong> Implementaste GET, POST, PUT y DELETE usando la base de datos.</li>
+        <li style="margin-bottom: 8px;"><strong>3. Uso de Async/Await:</strong> Entendiste por qué las operaciones son asíncronas.</li>
+        <li style="margin-bottom: 8px;"><strong>4. Persistencia Real:</strong> Verificaste que los datos permanecen después de reiniciar el servidor.</li>
+    </ul>
+</div>
+
+<details class="references-section" style="margin-bottom: 30px; padding: 0px; font-family: sans-serif;">
+    <summary style="font-weight: normal; cursor: pointer; color: white; outline: none;">Referencias Bibliográficas y Lecturas Recomendadas</summary>
+    <div style="margin-top: 15px; font-size: 0.9em; color: white;">
+        <ul style="padding-left: 20px;">
+            
+            <li style="margin-bottom: 8px;">
+                Ably. (2023). <em>Best Databases for Node.js</em>. Recuperado de 
+                <a href="https://ably.com/blog/best-nodejs-databases" target="_blank" rel="noopener noreferrer" style="color: #4da6ff;">
+                    Ably Blog
+                </a>
+            </li>
+
+            <li style="margin-bottom: 8px;">
+                OpenJS Foundation. (s.f.). <em>Acerca de Node.js</em>. Recuperado de 
+                <a href="https://nodejs.org/es/about" target="_blank" rel="noopener noreferrer" style="color: #4da6ff;">
+                    Node.js Oficial
+                </a>
+            </li>
+            
+            <li style="margin-bottom: 8px;">
+                ExpressJS. (s.f.). <em>Guía de Direccionamiento (Routing)</em>. Recuperado de 
+                <a href="https://expressjs.com/en/guide/routing.html" target="_blank" rel="noopener noreferrer" style="color: #4da6ff;">
+                    ExpressJS Guide
+                </a>
+            </li>
+
+        </ul>
+    </div>
+</details>
+
     <div class="module-navigation">
         <button class="nav-module-btn prev" data-navigate="module2"><i class="fas fa-arrow-left"></i> Anterior</button>
         <button class="nav-module-btn next" data-navigate="module4">Ir al Módulo 4 <i class="fas fa-arrow-right"></i></button>
