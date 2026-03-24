@@ -1,8 +1,490 @@
 <section id="module4" class="content-section">
     <span class="module-tag">Módulo 4</span>
     <h2>Autenticación y Seguridad</h2>
-    <p>Contenido en construcción...</p>
-    
+
+    <p>
+        En el módulo anterior logramos persistir datos reales en una base de datos. Pero hay un gran problema: 
+        cualquier persona puede acceder a tus endpoints y hacer lo que quiera con tus datos. 
+        En este módulo aprenderemos a proteger nuestra API: quién puede entrar, qué puede ver, y cómo evitar los ataques más comunes.
+    </p>
+
+    <!-- ===================== HELMET ===================== -->
+    <h3>Helmet: Cabeceras HTTP Seguras</h3>
+    <p>
+        Cuando tu servidor responde una petición, no solo envía datos, también envía <strong>cabeceras HTTP</strong> 
+        (metadatos sobre la respuesta). Por defecto, Express expone información que puede ser aprovechada por atacantes, 
+        como qué tecnología usas o qué versión del servidor corre.
+    </p>
+    <p>
+        <code>helmet</code> es un middleware que configura automáticamente estas cabeceras para seguir las mejores prácticas de seguridad. 
+        Es como ponerle un casco a tu servidor.
+    </p>
+
+    <div class="code-block">
+        <div class="code-header">Instalación</div>
+        <pre><code>npm install helmet</code></pre>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">index.js — Usar Helmet</div>
+        <pre><code>import helmet from 'helmet';
+
+app.use(helmet()); // Una sola línea protege múltiples vectores de ataque</code></pre>
+    </div>
+
+
+
+    <!-- ===================== CORS ===================== -->
+    <h3>CORS: Quién Puede Hablarle a tu API</h3>
+    <p>
+        CORS (<em>Cross-Origin Resource Sharing</em>) es una política del navegador que controla qué dominios 
+        pueden hacer peticiones a tu API. Por defecto, si tu frontend está en <code>http://localhost:5173</code> 
+        y tu backend en <code>http://localhost:3000</code>, el navegador bloqueará esa comunicación.
+    </p>
+    <p>
+        El paquete <code>cors</code> te permite definir exactamente qué orígenes están permitidos.
+    </p>
+
+    <div class="code-block">
+        <div class="code-header">Instalación</div>
+        <pre><code>npm install cors</code></pre>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">index.js — Configurar CORS</div>
+        <pre><code>import cors from 'cors';
+
+// Opción 1: Permitir TODOS los orígenes (útil en desarrollo)
+app.use(cors());
+
+// Opción 2: Permitir solo tu frontend en producción (recomendado)
+app.use(cors({
+  origin: 'https://mi-frontend.com',
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));</code></pre>
+    </div>
+
+    <p>
+        En producción siempre deberías usar la Opción 2. Abrir CORS a todos los orígenes es como dejar la puerta 
+        de tu casa abierta: funciona, pero no es seguro.
+    </p>
+
+    <!-- ===================== BCRYPT ===================== -->
+    <h3>Bcrypt: Nunca Guardes Contraseñas en Texto Plano</h3>
+    <p>
+        Una de las reglas más importantes de seguridad: <strong>jamás guardes contraseñas como texto legible</strong> 
+        en tu base de datos. Si alguien hackea tu DB y las contraseñas están en texto plano, todos tus usuarios 
+        quedan expuestos.
+    </p>
+    <p>
+        <code>bcrypt</code> es una función de <strong>hashing</strong>: transforma una contraseña en una cadena 
+        irreversible. No existe forma directa de "desencriptar" un hash de bcrypt; la única manera de verificarlo 
+        es hasheando de nuevo la contraseña ingresada y comparando.
+    </p>
+
+    <div class="code-block">
+        <div class="code-header">Instalación</div>
+        <pre><code>npm install bcryptjs</code></pre>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">index.js — Hashear al guardar (MongoDB / Mongoose)</div>
+        <pre><code>import bcrypt from 'bcryptjs';
+
+// El hook .pre('save') se ejecuta ANTES de guardar en la DB
+userSchema.pre('save', async function() {
+  // Solo hashea si la contraseña fue modificada (evita doble hash)
+  if (!this.isModified('password')) return;
+  
+  // El número 10 es el "salt rounds": cuántas veces se procesa
+  // Más alto = más seguro, pero más lento. 10 es el estándar.
+  this.password = await bcrypt.hash(this.password, 10);
+});</code></pre>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">index.js — Hashear al guardar (MySQL / mysql2)</div>
+        <pre><code>const User = sequelize.define('User', {
+  name:     { type: DataTypes.STRING, allowNull: false },
+  email:    { type: DataTypes.STRING, allowNull: false, unique: true,
+              validate: { isEmail: true } },
+  password: { type: DataTypes.STRING, allowNull: false }
+}, {
+  hooks: {
+    beforeCreate: async (user) => {
+      user.password = await bcrypt.hash(user.password, 10);
+    },
+    beforeUpdate: async (user) => {
+      if (user.changed('password'))
+        user.password = await bcrypt.hash(user.password, 10);
+    }
+  }
+});</code></pre>
+    </div> 
+
+    <!-- ===================== JWT ===================== -->
+    <h3>JWT: Tokens de Identidad</h3>
+    <p>
+        Después del login, necesitamos una forma de identificar al usuario en cada petición siguiente. 
+        HTTP es un protocolo <strong>sin estado</strong> (stateless): el servidor no recuerda quién eres de una 
+        petición a otra. Las sesiones tradicionales usaban cookies en el servidor; las APIs modernas usan 
+        <strong>JWT (JSON Web Tokens)</strong>.
+    </p>
+    <p>
+        Un JWT es una cadena firmada criptográficamente que contiene información del usuario. 
+        El servidor la genera al hacer login y el cliente la envía en cada petición siguiente.
+    </p>
+
+    <div class="code-block">
+        <div class="code-header">Instalación</div>
+        <pre><code>npm install jsonwebtoken</code></pre>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">index.js — Generar y verificar JWT</div>
+        <pre><code>import jwt from 'jsonwebtoken';
+
+// Esta clave NUNCA debe estar en el código
+// Guárdala en una variable de entorno (.env)
+const JWT_SECRET = 'mi_clave_secreta_123';
+
+// GENERAR TOKEN al hacer login exitoso
+app.post('/login', async (req, res) => {
+  // ... validar credenciales ...
+  
+  // jwt.sign(payload, secreto, opciones)
+  const token = jwt.sign(
+    { id: user._id },      // Payload: qué datos incluir (nunca la contraseña)
+    JWT_SECRET,
+    { expiresIn: '1h' }    // El token expira en 1 hora
+  );
+  
+  res.json({ token });
+});
+
+// VERIFICAR TOKEN en un middleware
+const authMiddleware = (req, res, next) => {
+  // El cliente envía el token en el header: "Authorization: Bearer <token>"
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1]; // Extrae solo el token
+
+  if (!token) return res.status(401).json({ error: "Token no proporcionado" });
+
+  try {
+    // jwt.verify() lanza un error si el token es inválido o expiró
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded; // Adjunta los datos del usuario a la request
+    next();             // Continúa al siguiente handler
+  } catch (error) {
+    res.status(401).json({ error: "Token inválido o expirado" });
+  }
+};</code></pre>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">index.js — Proteger rutas con el middleware</div>
+        <pre><code>// Ruta PÚBLICA: cualquiera puede acceder
+app.post('/login', async (req, res) => { ... });
+app.post('/register', async (req, res) => { ... });
+
+// Ruta PROTEGIDA: solo usuarios con token válido
+// authMiddleware se ejecuta ANTES de la ruta /users
+app.get('/users', authMiddleware, async (req, res) => {
+  // Si llegamos aquí, req.user existe y tiene el id del usuario
+  const users = //lógica para obtener usuarios de la DB;
+  res.json(users);
+});</code></pre>
+    </div>
+
+    <h3>Flujo completo de autenticación</h3>
+    <img src="images/autenticacion-module4.jpg" 
+     alt="Arquitectura de Node.js" 
+     class="module-image">
+
+    <!-- ===================== SERVIDOR COMPLETO MONGO ===================== -->
+    <h2>Servidor Completo: MongoDB + Seguridad</h2>
+    <p>
+        Aquí está el servidor completo con todas las piezas ensambladas usando MongoDB y Mongoose. 
+        Cada sección está comentada para que puedas identificar exactamente qué hace cada parte.
+    </p>
+
+    <div class="code-block">
+        <div class="code-header">index.js — Servidor MongoDB con autenticación</div>
+        <pre><code>import express from 'express';
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import cors from 'cors';
+import helmet from 'helmet';
+
+const app = express();
+const PORT = 3000;
+const JWT_SECRET = 'mi_clave_secreta_123'; 
+
+// 1. SEGURIDAD BÁSICA
+app.use(helmet()); 
+app.use(cors());
+app.use(express.json());
+
+// 2. CONEXIÓN A MONGODB
+mongoose.connect('mongodb://localhost:27017/test')
+  .then(() => console.log("Conectado a MongoDB"))
+  .catch(err => console.error("Error de conexión:", err));
+
+// 3. MODELO con hook de encriptación
+const userSchema = new mongoose.Schema({
+  name:     { type: String, required: true },
+  email:    { type: String, required: true, unique: true },
+  password: { type: String, required: true }
+});
+
+userSchema.pre('save', async function() {
+  if (!this.isModified('password')) return;
+  this.password = await bcrypt.hash(this.password, 10);
+});
+
+const User = mongoose.model('User', userSchema);
+
+// 4. MIDDLEWARE JWT
+const authMiddleware = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ error: "Token no proporcionado" });
+  try {
+    req.user = jwt.verify(token, JWT_SECRET);
+    next();
+  } catch {
+    res.status(401).json({ error: "Token inválido o expirado" });
+  }
+};
+
+// 5. RUTAS PÚBLICAS
+app.post('/register', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password)
+      return res.status(400).json({ error: "Todos los campos son obligatorios" });
+
+    const newUser = new User({ name, email, password });
+    await newUser.save();
+    res.status(201).json({ message: "Usuario registrado", id: newUser._id });
+  } catch (error) {
+    res.status(400).json({ error: "El email ya existe o datos inválidos" });
+  }
+});
+
+app.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (user && await bcrypt.compare(password, user.password)) {
+      const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
+      res.json({ token });
+    } else {
+      res.status(401).json({ error: "Credenciales inválidas" });
+    }
+  } catch {
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+});
+
+// 6. RUTAS PROTEGIDAS
+app.get('/users', authMiddleware, async (req, res) => {
+  const users = await User.find().select('-password');
+  res.json(users);
+});
+
+app.put('/users/:id', authMiddleware, async (req, res) => {
+  const updated = await User.findByIdAndUpdate(
+    req.params.id, { name: req.body.name }, { new: true }
+  ).select('-password');
+  if (!updated) return res.status(404).json({ message: "No encontrado" });
+  res.json(updated);
+});
+
+app.delete('/users/:id', authMiddleware, async (req, res) => {
+  const deleted = await User.findByIdAndDelete(req.params.id);
+  if (!deleted) return res.status(404).json({ message: "No encontrado" });
+  res.json({ message: "Usuario eliminado" });
+});
+
+app.listen(PORT, () => console.log(`Servidor listo en http://localhost:${PORT}`));</code></pre>
+    </div>
+
+    <!-- ===================== SERVIDOR COMPLETO SQL ===================== -->
+    <h2>Servidor Completo: MySQL + Sequelize + Seguridad</h2>
+    <p>
+        La misma lógica de autenticación aplicada a MySQL. La diferencia principal es que usamos 
+        <strong>Sequelize</strong> como ORM (Object-Relational Mapper), que hace para SQL lo que Mongoose 
+        hace para MongoDB: nos permite trabajar con objetos JS en lugar de escribir SQL puro.
+    </p>
+
+    <div class="code-block">
+        <div class="code-header">Instalación (MySQL)</div>
+        <pre><code>npm install sequelize mysql2 bcryptjs jsonwebtoken cors helmet</code></pre>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">index.js — Servidor MySQL con Sequelize y autenticación</div>
+        <pre><code>import express from 'express';
+import { Sequelize, DataTypes } from 'sequelize';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import cors from 'cors';
+import helmet from 'helmet';
+
+const app = express();
+const PORT = 3000;
+const JWT_SECRET = 'mi_clave_secreta_123';
+
+// 1. SEGURIDAD BÁSICA
+app.use(helmet());
+app.use(cors());
+app.use(express.json());
+
+// 2. CONEXIÓN A MYSQL (Sequelize)
+const sequelize = new Sequelize('test_db', 'root', 'tu_password', {
+  host: 'localhost',
+  dialect: 'mysql',
+  logging: false
+});
+
+// 3. MODELO con hooks de encriptación
+const User = sequelize.define('User', {
+  name:     { type: DataTypes.STRING, allowNull: false },
+  email:    { type: DataTypes.STRING, allowNull: false, unique: true,
+              validate: { isEmail: true } },
+  password: { type: DataTypes.STRING, allowNull: false }
+}, {
+  hooks: {
+    beforeCreate: async (user) => {
+      user.password = await bcrypt.hash(user.password, 10);
+    },
+    beforeUpdate: async (user) => {
+      if (user.changed('password'))
+        user.password = await bcrypt.hash(user.password, 10);
+    }
+  }
+});
+
+// Crea la tabla si no existe
+sequelize.sync()
+  .then(() => console.log("Conectado a MySQL y tabla sincronizada"))
+  .catch(err => console.error("Error:", err));
+
+// 4. MIDDLEWARE JWT (idéntico al de MongoDB)
+const authMiddleware = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ error: "Token no proporcionado" });
+  try {
+    req.user = jwt.verify(token, JWT_SECRET);
+    next();
+  } catch {
+    res.status(401).json({ error: "Token inválido o expirado" });
+  }
+};
+
+// 5. RUTAS PÚBLICAS
+app.post('/register', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    const newUser = await User.create({ name, email, password });
+    res.status(201).json({ message: "Usuario registrado", id: newUser.id });
+  } catch {
+    res.status(400).json({ error: "El email ya existe o datos inválidos" });
+  }
+});
+
+app.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ where: { email } });
+
+    if (user && await bcrypt.compare(password, user.password)) {
+      const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1h' });
+      res.json({ token });
+    } else {
+      res.status(401).json({ error: "Credenciales inválidas" });
+    }
+  } catch {
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+});
+
+// 6. RUTAS PROTEGIDAS
+app.get('/users', authMiddleware, async (req, res) => {
+  const users = await User.findAll({ attributes: { exclude: ['password'] } });
+  res.json(users);
+});
+
+app.put('/users/:id', authMiddleware, async (req, res) => {
+  const user = await User.findByPk(req.params.id);
+  if (!user) return res.status(404).json({ message: "No encontrado" });
+  await user.update({ name: req.body.name });
+  res.json({ id: user.id, name: user.name, email: user.email });
+});
+
+app.delete('/users/:id', authMiddleware, async (req, res) => {
+  const deleted = await User.destroy({ where: { id: req.params.id } });
+  if (!deleted) return res.status(404).json({ message: "No encontrado" });
+  res.json({ message: "Usuario eliminado" });
+});
+
+app.listen(PORT, () => console.log(`Servidor MySQL listo en http://localhost:${PORT}`));</code></pre>
+    </div>
+
+    <!-- ===================== TAREA ===================== -->
+    <h2>Actividad Práctica: API con Autenticación y Seguridad</h2>
+    <p>
+        Ahora que entiendes cada pieza por separado, es momento de ensamblarlas. Toma tu proyecto del Módulo 3 
+        (el CRUD con base de datos) y agrégale la capa de autenticación y seguridad.
+    </p>
+
+    <div class="task-box" style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-top: 15px; margin-bottom: 25px; border-radius: 4px; color: #856404; font-family: sans-serif;">
+        <strong>🎯 Tarea del Módulo:</strong> Implementa autenticación y seguridad en tu servidor (MongoDB o MySQL). 
+        Debe incluir registro con contraseña hasheada, login con generación de JWT, y rutas CRUD protegidas 
+        por el middleware de autenticación. Las credenciales sensibles deben estar en variables de entorno. Recuerda Testear cada endpoint con Postman para verificar que la autenticación funciona correctamente.
+        Puedes ayudarte de la inteligencia artificial.
+    </div>
+
+    <!-- ===================== CHECKLIST ===================== -->
+    <div class="task-summary-box" style="background-color: #d4edda; border-left: 5px solid #28a745; padding: 20px; margin-top: 40px; margin-bottom: 30px; border-radius: 4px; color: #155724; font-family: sans-serif;">
+        <h3 style="margin-top: 0; color: #155724; font-size: 1.2em;">✅ Checklist del Módulo 4</h3>
+        <p>Antes de avanzar, asegúrate de:</p>
+        <ul style="margin-bottom: 0; padding-left: 20px;">
+            <li style="margin-bottom: 8px;"><strong>1. Helmet y CORS:</strong> Tu servidor usa <code>helmet()</code> y <code>cors()</code> como middlewares globales.</li>
+            <li style="margin-bottom: 8px;"><strong>2. Contraseñas hasheadas:</strong> Ninguna contraseña se guarda en texto plano; todas pasan por bcrypt antes de llegar a la DB.</li>
+            <li style="margin-bottom: 8px;"><strong>3. JWT funcional:</strong> El endpoint <code>/login</code> genera un token y el <code>authMiddleware</code> lo verifica correctamente.</li>
+            <li style="margin-bottom: 8px;"><strong>4. Rutas protegidas:</strong> Las rutas CRUD devuelven <code>401</code> si no se envía un token válido.</li>
+            <li style="margin-bottom: 8px;"><strong>5. Variables de entorno:</strong> El <code>JWT_SECRET</code> y las credenciales de DB están en un archivo <code>.env</code> que no se sube al repositorio.</li>
+        </ul>
+    </div>
+
+    <!-- ===================== REFERENCIAS ===================== -->
+    <details class="references-section" style="margin-bottom: 30px; padding: 0px; font-family: sans-serif;">
+        <summary style="font-weight: normal; cursor: pointer; color: white; outline: none;">Referencias Bibliográficas y Lecturas Recomendadas</summary>
+        <div style="margin-top: 15px; font-size: 0.9em; color: white;">
+            <ul style="padding-left: 20px;">
+                <li style="margin-bottom: 8px;">
+    Insider Engineering. (2024). <em>In-depth security in your Node.js backend applications</em>. Recuperado de 
+    <a href="https://medium.com/insiderengineering/in-depth-security-in-your-node-js-backend-applications-674740b7592e" target="_blank" rel="noopener noreferrer" style="color: #4da6ff;">Medium</a>
+</li>
+<li style="margin-bottom: 8px;">
+    Node.js Foundation. (s.f.). <em>Node.js Security Best Practices</em>. Recuperado de 
+    <a href="https://nodejs.org/en/docs/guides/security-best-practices/" target="_blank" rel="noopener noreferrer" style="color: #4da6ff;">nodejs.org</a>
+</li>
+<li style="margin-bottom: 8px;">
+    Express.js. (s.f.). <em>Production Best Practices: Security</em>. Recuperado de 
+    <a href="https://expressjs.com/en/advanced/best-practice-security.html" target="_blank" rel="noopener noreferrer" style="color: #4da6ff;">expressjs.com</a>
+</li>
+<li style="margin-bottom: 8px;">
+    Diego Coder. (2020). <em>Autenticación en Node.js con JSON Web Tokens y Express</em>. Recuperado de 
+    <a href="https://medium.com/@diego.coder/autenticaci%C3%B3n-en-node-js-con-json-web-tokens-y-express-ed9d90c5b579" target="_blank" rel="noopener noreferrer" style="color: #4da6ff;">Medium</a>
+</li>
+            </ul>
+        </div>
+    </details>
+
     <div class="module-navigation">
         <button class="nav-module-btn prev" data-navigate="module3"><i class="fas fa-arrow-left"></i> Anterior</button>
         <button class="nav-module-btn next" data-navigate="module5">Ir al Módulo 5 <i class="fas fa-arrow-right"></i></button>

@@ -89,7 +89,7 @@ npm install express</code></pre>
   <div class="code-block">
     <div class="code-header">index.js</div>
     <pre><code>// 1. Importar express
-const express = require('express');
+import express from 'express';
 
 // 2. Inicializar la aplicación
 const app = express();
@@ -254,8 +254,15 @@ let users = [
 </code></pre>
     </div>
 
+    <h3>Prueba tu servidor</h3>
+<p>Para probar que tu servidor funciona, no basta con usar el navegador. Necesitas un Cliente API para enviar datos en formato JSON y probar los métodos POST, PUT y DELETE. Acá te dejo una recomendación: </p>
+
+<div class="video-tutorial">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/FQAQO90LoQU" title="Testear una API con Postman" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
     <div class="task-box" style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-top: 15px; margin-bottom: 25px; border-radius: 4px; color: #856404; font-family: sans-serif;">
-        <strong>🎯 Tarea del Módulo:</strong> Implementa los 4 métodos HTTP en tu servidor de Express y asegúrate de que el middleware de registro funcione correctamente antes de responder a cualquier ruta. Para la lógica interna del middleware y de cada ruta puedes apoyarte de la inteligencia artificial (solo asegúrate de entender bien los conceptos).
+        <strong>🎯 Tarea del Módulo:</strong> Implementa los 4 métodos HTTP en tu servidor de Express y asegúrate de que el middleware de registro funcione correctamente antes de responder a cualquier ruta. Para la lógica interna del middleware y de cada ruta puedes apoyarte de la inteligencia artificial (solo asegúrate de entender bien los conceptos). Finalmente prueba tus 4 rutas con postman o la herramienta de preferencia.
     </div>
 
     <div class="task-summary-box" style="background-color: #d4edda; border-left: 5px solid #28a745; padding: 20px; margin-top: 40px; margin-bottom: 30px; border-radius: 4px; color: #155724; font-family: sans-serif;">
@@ -263,7 +270,7 @@ let users = [
         <p>Antes de pasar al Módulo 3, asegúrate de haber cumplido con:</p>
         <ul style="margin-bottom: 0; padding-left: 20px;">
             <li style="margin-bottom: 8px;"><strong>1. Express Setup:</strong> Instalaste el framework y levantaste un servidor escuchando en un puerto específico.</li>
-            <li style="margin-bottom: 8px;"><strong>2. Dominio de Rutas:</strong> Definiste correctamente los métodos GET, POST, PUT y DELETE.</li>
+            <li style="margin-bottom: 8px;"><strong>2. Dominio de Rutas:</strong> Definiste correctamente los métodos GET, POST, PUT y DELETE. Luego los probaste con Postman o la herramienta de preferencia.</li>
             <li style="margin-bottom: 8px;"><strong>3. Lógica de Middleware:</strong> Implementaste al menos un middleware funcional (global o de ruta) y entendiste el uso de <code>next()</code>.</li>
             <li style="margin-bottom: 8px;"><strong>4. Persistencia Temporal:</strong> Lograste manipular datos (crear, leer, borrar) dentro de un arreglo en memoria.</li>
         </ul>

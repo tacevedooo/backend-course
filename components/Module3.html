@@ -83,24 +83,54 @@
 
     <div class="code-block">
         <div class="code-header">Ejemplo básico (MySQL)</div>
-        <pre><code>const mysql = require("mysql2");
+        <pre><code>import mysql from 'mysql2/promise';
 
-// 1. Crear la conexión
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "", // Tu contraseña de MySQL
-  database: "test" // El nombre de tu base de datos
+// 1. Configuración del pool de conexiones
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: '', // Tu contraseña de MySQL
+  database: 'test', // Asegúrate de tener una base de datos llamada 'test' creada en tu MySQL
 });
 
-// 2. Ejecutar una consulta (READ)
-connection.query("SELECT * FROM users", (err, results) => {
-  if (err) {
-    console.error("Error en la consulta:", err);
-    return;
+// 2. Función para inicializar la base de datos
+const initializeDatabase = async () => {
+  try {
+    // SQL para crear la tabla si no existe
+    const createTableQuery = `
+      CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL
+      )
+    `;
+    await pool.query(createTableQuery);
+    console.log("Tabla verificada");
+  } catch (error) {
+    console.error("Error al inicializar tabla:", error.message);
   }
-  console.log(results); // Aquí verás el arreglo de filas
-});</code></pre>
+};
+
+// 3. Función para consultar todos los usuarios
+const getAllUsers = async () => {
+  try {
+    // Retorna un arreglo donde el primer elemento son las filas (rows)
+    const [rows] = await pool.query("SELECT * FROM users");
+    return rows;
+  } catch (error) {
+    console.error("Error al consultar usuarios:", error.message);
+    throw error;
+  }
+};
+
+// Ejecución del flujo
+const start = async () => {
+  await initializeDatabase();
+  
+  const users = await getAllUsers();
+  console.log("Listado de usuarios:", users);
+};
+
+start();</code></pre>
     </div>
 
     <div class="video-tutorial">
@@ -119,7 +149,7 @@ connection.query("SELECT * FROM users", (err, results) => {
 
     <div class="code-block">
         <div class="code-header">Ejemplo con Mongoose</div>
-        <pre><code>const mongoose = require("mongoose");
+        <pre><code>import mongoose from "mongoose";
 
 // 1. Conectar a la base de datos
 mongoose.connect("mongodb://localhost:27017/test")
@@ -173,9 +203,9 @@ npm install mysql2</code></pre>
 <h4>Opción 1: MongoDB (NoSQL)</h4>
 <div class="code-block">
     <div class="code-header">index.js</div>
-    <pre><code>const mongoose = require('mongoose');
+    <pre><code>import mongoose from 'mongoose';
 
-mongoose.connect('mongodb://localhost:27017/mi_academia')
+mongoose.connect('mongodb://localhost:27017/test')
   .then(() => console.log("¡Base de datos conectada!"))
   .catch(err => console.error("Fallo de conexión", err));
 
@@ -188,15 +218,35 @@ const User = mongoose.model('User', {
 <h4>Opción 2: MySQL (SQL)</h4>
 <div class="code-block">
     <div class="code-header">index.js</div>
-    <pre><code>const mysql = require('mysql2/promise');
+    <pre><code>import mysql from 'mysql2/promise';
 
-// Crear conexión
+// 1. Crear el pool de conexiones con soporte para promesas
 const connection = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: '',
-  database: 'mi_academia'
-});</code></pre>
+  password: '', // Tu contraseña de MySQL
+  database: 'test',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+// 2. Función para inicializar la tabla
+const setupDatabase = async () => {
+  try {
+    const createTableQuery = `
+      CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL
+      )
+    `;
+    // Ejecuta la creación de la tabla
+    await connection.query(createTableQuery);
+    console.log("Tabla 'users' verificada o creada");
+  } catch (error) {
+    console.error("Error al inicializar la tabla:", error.message);
+  }
+};</code></pre>
 </div>
 
 <h3>Concepto Importante: async / await</h3>
@@ -281,7 +331,7 @@ app.delete('/users/:id', async (req, res) => {
 </ol>
 
 <div class="task-box" style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-top: 15px; margin-bottom: 25px; border-radius: 4px; color: #856404; font-family: sans-serif;">
-    <strong>🎯 Tarea del Módulo:</strong> Migra completamente tu aplicación para usar una base de datos real (MongoDB o MySQL). Implementa los 4 métodos HTTP (GET, POST, PUT, DELETE) conectados a la base de datos y verifica que la información persista incluso después de reiniciar el servidor.
+    <strong>🎯 Tarea del Módulo:</strong> Migra completamente tu aplicación para usar una base de datos real (MongoDB o MySQL). Implementa los 4 métodos HTTP (GET, POST, PUT, DELETE) conectados a la base de datos y verifica que la información persista incluso después de reiniciar el servidor. Puedes ayudarte de la inteligencia artificial.
 </div>
 
 <div class="task-summary-box" style="background-color: #d4edda; border-left: 5px solid #28a745; padding: 20px; margin-top: 40px; margin-bottom: 30px; border-radius: 4px; color: #155724; font-family: sans-serif;">
