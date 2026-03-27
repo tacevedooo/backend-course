@@ -1,8 +1,202 @@
 <section id="module5" class="content-section">
     <span class="module-tag">Módulo 5</span>
     <h2>Arquitectura Backend Profesional</h2>
-    <p>Contenido en construcción...</p>
+
+    <p>
+        En el módulo anterior logramos asegurar nuestra API con autenticación, JWT y contraseñas encriptadas.
+        Pero seguramente notaste algo que tu archivo <code>index.js</code> se está volviendo enorme. 
+        Tienes la configuración del servidor, la conexión a la base de datos, las rutas, la lógica de negocio y la seguridad, todo mezclado en un solo lugar.
+    </p>
+    <p>
+        En la industria, el código no se escribe así. En este módulo aprenderemos sobre <strong>Modularidad y Arquitectura</strong>: Dividir un problema grande en piezas pequeñas, ordenadas y fáciles de mantener.
+    </p>
+
+    <h3>¿Qué es la Modularidad?</h3>
+    <p>
+        La modularidad en la arquitectura de software es simplemente la práctica de dividir cosas grandes en piezas más pequeñas. 
+    </p>
+    <ul>
+        <li><strong>Mejor organización:</strong> Te ayuda a visualizar y entender qué hace cada parte de tu proyecto.</li>
+        <li><strong>Menos errores:</strong> Un proyecto subdividido es mucho más fácil de mantener y probar.</li>
+        <li><strong>Trabajo en equipo:</strong> Si tu proyecto tiene muchas piezas, diferentes programadores pueden trabajar en distintas partes al mismo tiempo sin "pisarse" el código.</li>
+    </ul>
+
+    <h3>Infraestructura: Monolitos vs Microservicios</h3>
+    <p>
+        Antes de ver cómo organizar nuestras carpetas, hablemos de cómo se organizan los servidores en la vida real. Imagina que estamos construyendo una app de streaming de video.
+    </p>
+    <h3>La Arquitectura Monolítica</h3>
+    <p>
+        Al principio, la APP tiene un solo servidor (un backend en Node/Express) que se encarga de todo: 
+        autenticar usuarios, procesar los pagos de suscripción y transmitir los videos. A esto se le llama <strong>Monolito</strong>. 
+        Es muy bueno para empezar porque es simple de crear y desplegar.
+    </p>
+<img src="images/Monolito-Module5.jpg" 
+     alt="Monolito" 
+     class="module-image">
+    <h3>La Arquitectura de Microservicios</h3>
+    <p>
+        De repente, la APP se vuelve mundialmente famosa. El servidor empieza a colapsar porque transmitir video consume demasiados recursos. 
+        En lugar de tener un solo servidor gigante, dividimos el backend: creamos un servidor <em>solo</em> para pagos, otro <em>solo</em> para autenticación y otro <em>solo</em> para streaming. 
+        Esto es un <strong>Microservicio</strong>. Si el streaming necesita más potencia, solo escalamos ese servidor sin tocar los demás.
+    </p>
+<img src="images/Microservicios-Module5.jpg" 
+     alt="Microservicios" 
+     class="module-image">
+    <p>
+        <em>Nota: Los microservicios son complejos y se usan en proyectos gigantes. Para tu proyecto actual, seguiremos usando un Monolito, pero organizaremos su código internamente como profesionales.</em>
+    </p>
+
+    <h3>El Problema: Todo en un solo archivo</h3>
+    <p>
+        Imagina que creamos una API para gestionar un refugio de conejitos. Si ponemos todo en <code>app.js</code>, se vería así:
+    </p>
+
+    <div class="code-block">
+        <div class="code-header">app.js — (Cómo NO hacerlo en proyectos grandes)</div>
+        <pre><code>const express = require('express');
+const app = express();
+
+// 1. Base de datos simulada aquí mismo
+const db = [{ id: 1, name: 'Bugs' }, { id: 2, name: 'Lola' }];
+
+// 2. Rutas y Lógica de negocio mezcladas
+app.get('/rabbits', (req, res) => {
+    // Si la lógica fuera compleja, este archivo tendría miles de líneas
+    res.json(db); 
+});
+
+app.listen(3000, () => console.log('Servidor listo'));</code></pre>
+    </div>
+
+    <p>
+        Esto funciona, pero si agregamos validaciones, seguridad, manejo de errores y conexión a una base de datos real, este archivo sería muy difícil de entender.
+    </p>
+
+    <h3>Arquitectura por Capas</h3>
+    <p>
+        Para solucionar esto, dividiremos las responsabilidades en diferentes carpetas y archivos. La regla más importante es que cada archivo debe hacer una sola cosa, y la comunicación sigue un flujo estricto: la petición entra por el servidor, pasa a las rutas, luego al controlador y finalmente al modelo.
+    </p>
     
+
+    <p>Nuestra nueva estructura de carpetas será así:</p>
+    <br></br>
+    <pre style="background: #2d2d2d; color: #ccc; padding: 15px; border-radius: 5px;">
+📦 mi-proyecto/
+ ┣ 📂 db/
+ ┃ ┗ 📜 connection.js      <span style="color: #888;">// Solo se conecta a la base de datos</span>
+ ┣ 📂 routes/
+ ┃ ┗ 📜 users.routes.js    <span style="color: #888;">// Solo define las URLs (ej: GET /users)</span>
+ ┣ 📂 controllers/
+ ┃ ┗ 📜 users.ctrl.js      <span style="color: #888;">// El cerebro: recibe la petición y decide qué hacer</span>
+ ┣ 📂 models/
+ ┃ ┗ 📜 users.model.js     <span style="color: #888;">// Solo habla con la Base de Datos (SQL o MongoDB)</span>
+ ┗ 📜 app.js               <span style="color: #888;">// Solo levanta el servidor de Express</span></pre>
+
+ <br></br>
+    <h4>Paso 1: El Servidor (app.js)</h4>
+    <p>Su única responsabilidad es iniciar Express y conectar las rutas principales.</p>
+    <div class="code-block">
+        <div class="code-header">app.js</div>
+        <pre><code>import express from 'express';
+import rabbitRoutes from './routes/rabbits.routes.js';
+
+const app = express();
+
+app.use(express.json());
+app.use('/rabbits', rabbitRoutes); // Conectamos la capa de rutas
+
+app.listen(7070, () => console.log('Servidor en puerto 7070'));</code></pre>
+    </div>
+ <br></br>
+    <h4>Paso 2: Las Rutas (routes/)</h4>
+    <p>Aquí definimos los "caminos" de nuestra API, pero <strong>no</strong> escribimos la lógica. Solo delegamos el trabajo al controlador.</p>
+    <div class="code-block">
+        <div class="code-header">routes/rabbits.routes.js</div>
+        <pre><code>import { Router } from 'express';
+import { listRabbits, getRabbit } from '../controllers/rabbits.controllers.js';
+
+const router = Router();
+
+router.get('/', listRabbits);    // Delega al controlador
+router.get('/:id', getRabbit);   // Delega al controlador
+
+export default router;</code></pre>
+    </div>
+ <br></br>
+    <h4>Paso 3: Los Controladores (controllers/)</h4>
+    <p>Es el cerebro. Valida los datos de la petición (<code>req</code>) y decide qué responder (<code>res</code>).</p>
+    <div class="code-block">
+        <div class="code-header">controllers/rabbits.controllers.js</div>
+        <pre><code>import { getAllItems } from '../models/rabbits.models.js';
+
+export const listRabbits = async (req, res) => {
+    try {
+        const rabbits = await getAllItems(); // Pide datos al modelo
+        res.status(200).json(rabbits);
+    } catch (error) {
+        res.status(500).json({ error: "Error en el servidor" });
+    }
+};</code></pre>
+    </div>
+ <br></br>
+    <h4>Paso 4: Los Modelos (models/)</h4>
+    <p>Esta capa es la única autorizada para hablar con la base de datos (MongoDB o MySQL). Si un día cambias de base de datos, solo modificarías esta carpeta!</p>
+    <div class="code-block">
+        <div class="code-header">models/rabbits.models.js</div>
+        <pre><code>import db from '../db/connection.js'; // Tu conexión a DB
+
+export const getAllItems = async () => {
+    // Aquí iría tu código de Mongoose o Sequelize
+    // Ej: return await Rabbit.find();
+    return [{ id: 1, name: "Bugs" }]; 
+};</code></pre>
+    </div>
+
+    <h2>Actividad Práctica: Refactorización del código</h2>
+    <p>
+        ¡Es hora de limpiar tu código! Toma tu proyecto del Módulo 4 (el CRUD de usuarios que ya tiene autenticación, JWT y base de datos) y reorganízalo.
+    </p>
+
+    <div class="task-box" style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-top: 15px; margin-bottom: 25px; border-radius: 4px; color: #856404; font-family: sans-serif;">
+        <strong>🎯 Tarea del Módulo:</strong> Refactoriza tu API monolítica actual utilizando la <strong>Arquitectura por Capas</strong>. 
+        Debes eliminar toda la lógica de tu <code>index.js</code> / <code>app.js</code> y distribuirla correctamente en las carpetas <code>routes/</code>, <code>controllers/</code> y <code>models/</code>. 
+        Tus middlewares (como la verificación de JWT y Helmet) deben configurarse en el archivo principal o inyectarse en el archivo de rutas. 
+        Prueba todo en Postman para asegurarte de que la refactorización no rompió tu código.
+    </div>
+
+    <div class="task-summary-box" style="background-color: #d4edda; border-left: 5px solid #28a745; padding: 20px; margin-top: 40px; margin-bottom: 30px; border-radius: 4px; color: #155724; font-family: sans-serif;">
+        <h3 style="margin-top: 0; color: #155724; font-size: 1.2em;">✅ Checklist del Módulo 5</h3>
+        <p>Antes de avanzar, asegúrate de:</p>
+        <ul style="margin-bottom: 0; padding-left: 20px;">
+            <li style="margin-bottom: 8px;"><strong>1. Limpieza del servidor:</strong> Tu archivo <code>app.js</code> o <code>index.js</code> solo contiene la configuración de Express, middlewares globales y la importación de rutas.</li>
+            <li style="margin-bottom: 8px;"><strong>2. Capa de Rutas:</strong> Tienes una carpeta <code>routes/</code> donde se definen los endpoints (ej. <code>/login</code>, <code>/users/:id</code>) y se aplican los middlewares de autenticación.</li>
+            <li style="margin-bottom: 8px;"><strong>3. Capa de Controladores:</strong> Tienes una carpeta <code>controllers/</code> que recibe los objetos <code>req</code> y <code>res</code>, ejecuta la lógica en <code>try/catch</code> y devuelve las respuestas HTTP correspondientes.</li>
+            <li style="margin-bottom: 8px;"><strong>4. Capa de Modelos:</strong> Tienes una carpeta <code>models/</code> donde están tus esquemas de Mongoose o modelos de Sequelize, siendo el único lugar que interactúa directamente con la DB.</li>
+            <li style="margin-bottom: 8px;"><strong>5. Funcionamiento intacto:</strong> Has probado tu API refactorizada con Postman y el CRUD + Login sigue funcionando exactamente igual que en el Módulo 4.</li>
+        </ul>
+    </div>
+
+    <details class="references-section" style="margin-bottom: 30px; padding: 0px; font-family: sans-serif;">
+    <summary style="font-weight: normal; cursor: pointer; color: white; outline: none;">Referencias Bibliográficas y Lecturas Recomendadas</summary>
+    <div style="margin-top: 15px; font-size: 0.9em; color: white;">
+        <ul style="padding-left: 20px;">
+            <li style="margin-bottom: 8px;">
+                freeCodeCamp. (s.f.). <a href="https://www.freecodecamp.org/news/an-introduction-to-software-architecture-patterns/" style="color: #4CAF50; text-decoration: none;"><em>An introduction to Software Architecture Patterns</em></a>. Recuperado de freeCodeCamp News.
+            </li>
+            <li style="margin-bottom: 8px;">
+                Amazon Web Services (AWS). (s.f.). <a href="https://aws.amazon.com/es/compare/the-difference-between-monolithic-and-microservices-architecture/" style="color: #4CAF50; text-decoration: none;"><em>¿Cuál es la diferencia entre microservicios y arquitectura monolítica?</em></a>. Recuperado de AWS Cloud.
+            </li>
+            <li style="margin-bottom: 8px;">
+                Node.js. (s.f.). <a href="https://nodejs.org/es/learn/getting-started/introduction-to-nodejs" style="color: #4CAF50; text-decoration: none;"><em>Introduction to Node.js</em></a>. Recuperado de Node.js Learning Guide.
+            </li>
+            <li style="margin-bottom: 8px;">
+                Express.js. (s.f.). <a href="https://expressjs.com/" style="color: #4CAF50; text-decoration: none;"><em>Fast, unopinionated, minimalist web framework for Node.js</em></a>. Recuperado de la documentación oficial de Express.
+            </li>
+        </ul>
+    </div>
+</details>
+
     <div class="module-navigation">
         <button class="nav-module-btn prev" data-navigate="module4"><i class="fas fa-arrow-left"></i> Anterior</button>
         <button class="nav-module-btn next" data-navigate="module6">Ir al Módulo 6 <i class="fas fa-arrow-right"></i></button>
