@@ -1,9 +1,134 @@
 <section id="module6" class="content-section">
     <span class="module-tag">Módulo 6</span>
-    <h2>Deploy y Producción</h2>
-    <p>Contenido en construcción...</p>
+    <h2>Despliegue y Producción</h2>
+
+    <p>
+        En el módulo anterior logramos organizar nuestro código usando la Arquitectura por Capas. Tu API ya es segura, modular y fácil de mantener. 
+        Pero hasta ahora, todo vive en nuestro computador (localhost). Si apagas tu PC, tu aplicación deja de existir.
+    </p>
+    <p>
+        En este módulo aprenderemos sobre <strong>Despliegue y Producción</strong>: El proceso de tomar tu código fuente, prepararlo y alojarlo en un servidor real en la nube para que esté disponible las 24 horas del día, los 7 días de la semana.
+    </p>
+
+    <h3>1. Variables de Entorno</h3>
+    <p>
+        La regla número uno de la producción es <strong>nunca subir información sensible a tu repositorio de GitHub</strong>. Cosas como contraseñas, tu URL de conexión a la base de datos o tus secretos de JWT jamás deben estar en tu código.
+    </p>
+    <p>
+        Para resolver esto usamos Variables de Entorno. En Node.js, utilizamos una librería llamada <code>dotenv</code> para leer un archivo oculto llamado <code>.env</code>.
+    </p>
+
+    <div class="code-block">
+        <div class="code-header">.env — (Este archivo JAMÁS se sube a GitHub, ponlo en tu .gitignore)</div>
+        <pre><code>PORT=8080
+DB_URI=mongodb+srv://usuario:passwordSuperSecreta@cluster.mongodb.net/mi_db
+JWT_SECRET=MiSuperSecretoInhackeable123</code></pre>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">db/connection.js — (Cómo leer las variables)</div>
+        <pre><code>import 'dotenv/config'; // 1. Carga las variables del archivo .env
+import express from 'express';
+// import { connectDB } from './db/connection.js'; // Importa tu conexión
+
+const app = express();
+
+// 2. Usa el puerto del .env (producción) o el 3000 por defecto (local)
+const PORT = process.env.PORT || 3000; 
+
+app.use(express.json());
+
+// 3. Ejemplo genérico de conexión a tu Base de Datos (SQL o MongoDB)
+// connectDB(process.env.DB_URI)
+//     .then(() => console.log('Base de datos conectada con éxito'))
+//     .catch(error => console.error('Error de conexión:', error));
+
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
+});</code></pre>
+    </div>
+
+    <h3>2. Bases de Datos en la Nube</h3>
+    <p>
+        Si tu base de datos vive localmente en tu computadora, tu servidor en la nube no podrá acceder a ella. Antes de hacer deploy, necesitas migrar tu base de datos a un servicio gestionado en la nube. 
+    </p>
+    <ul>
+        <li style="margin-bottom: 10px;">
+            <strong>Si usas MongoDB:</strong> La mejor opción gratuita para empezar es <strong>MongoDB Atlas</strong>. Te dará una URL de conexión que pondrás en tu archivo <code>.env</code>.
+            <br>
+            <a href="https://www.mongodb.com/es/resources/products/platform/mongodb-atlas-tutorial" target="_blank" style="color: #4CAF50; text-decoration: none;"><strong>Ver Tutorial:</strong> Cómo configurar MongoDB Atlas</a>
+        </li>
+        <li>
+            <strong>Si usas SQL (Postgres/MySQL):</strong> Plataformas como <strong>Neon</strong>, <strong>Supabase</strong> o <strong>Railway</strong> ofrecen bases de datos gratuitas y fáciles de configurar.
+            <br>
+            <a href="https://docs.railway.com/databases/build-a-database-service" target="_blank" style="color: #4CAF50; text-decoration: none;"><strong>Ver Tutorial:</strong> Cómo crear un servicio de base de datos en Railway</a>
+        </li>
+    </ul>
+
+
+    <h3>3. Plataformas como Servicio (PaaS)</h3>
+    <p>
+        Hace años, hacer deploy implicaba rentar una computadora vacía (VPS), instalar Linux, Node.js, configurar firewalls y dominios a mano. Hoy en día, usamos <strong>PaaS (Platform as a Service)</strong>. 
+    </p>
+    <p>
+        Herramientas como <strong>Render</strong> o <strong>Railway</strong> se conectan directamente a tu repositorio de GitHub. Cada vez que haces un <code>git push</code>, ellos detectan que es una app de Node.js, instalan las dependencias automáticamente y encienden tu servidor.
+    </p>
+
+    <div class="code-block">
+        <div class="code-header">Verificar que tu package.json tenga este script</div>
+        <pre><code>"scripts": {
+    "start": "node app.js", // Las plataformas en la nube ejecutarán este comando
+}</code></pre>
+    </div>
+
     
-    <div class="module-navigation">
+    <div class="video-tutorial">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/pPiBhu7Inwg" title="Iniciar entorno Backend con npm" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <h2>Actividad Práctica: ¡Sube tu API a Internet!</h2>
+    <p>
+        Vamos a tomar la API  del Módulo 5 y la pondremos en producción.
+    </p>
+
+    <div class="task-box" style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-top: 15px; margin-bottom: 25px; border-radius: 4px; color: #856404; font-family: sans-serif;">
+        <strong>🎯 Tarea del Módulo:</strong> Prepara y despliega tu API. 
+        Primero, configura tus variables de entorno usando <code>dotenv</code> y asegúrate de que tu <code>.env</code> esté en el <code>.gitignore</code>. 
+        Segundo, crea una base de datos en la nube (ej. MongoDB Atlas o Railway) y conecta tu proyecto. 
+        Finalmente, sube tu código a GitHub y conéctalo a un servicio gratuito como <strong>Render</strong>. Configura las variables de entorno en el panel de control de Render y despliega tu app. Recuerda ayudarte de la inteligencia artificial para resolver cualquier duda que tengas durante el proceso.
+    </div>
+
+    <div class="task-summary-box" style="background-color: #d4edda; border-left: 5px solid #28a745; padding: 20px; margin-top: 40px; margin-bottom: 30px; border-radius: 4px; color: #155724; font-family: sans-serif;">
+        <h3 style="margin-top: 0; color: #155724; font-size: 1.2em;">✅ Checklist del Módulo 6</h3>
+        <p>Antes de avanzar, asegúrate de:</p>
+        <ul style="margin-bottom: 0; padding-left: 20px;">
+            <li style="margin-bottom: 8px;"><strong>1. Seguridad de credenciales:</strong> Tienes un archivo <code>.env</code> para tu entorno local y este archivo NO aparece en tu repositorio de GitHub.</li>
+            <li style="margin-bottom: 8px;"><strong>2. Script de inicio:</strong> Tu <code>package.json</code> tiene un comando <code>"start": "node app.js"</code> configurado correctamente.</li>
+            <li style="margin-bottom: 8px;"><strong>3. Puerto dinámico:</strong> Tu servidor escucha en <code>process.env.PORT || 3000</code>, permitiendo que el proveedor de la nube asigne el puerto que necesite.</li>
+            <li style="margin-bottom: 8px;"><strong>4. Base de datos en la nube:</strong> Tu aplicación está conectada a una base de datos en la nube (como MongoDB Atlas o Railway), no a una local.</li>
+            <li style="margin-bottom: 8px;"><strong>5. Backend en la nube:</strong> Tienes una URL pública (ej. <code>tu-api.onrender.com</code>) y puedes hacer peticiones exitosas (GET, POST) desde Postman apuntando a esa URL de internet, no a localhost.</li>
+        </ul>
+    </div>
+
+    <details class="references-section" style="margin-bottom: 30px; padding: 0px; font-family: sans-serif;">
+    <summary style="font-weight: normal; cursor: pointer; color: white; outline: none;">Referencias Bibliográficas y Lecturas Recomendadas</summary>
+    <div style="margin-top: 15px; font-size: 0.9em; color: white;">
+        <ul style="padding-left: 20px;">
+            <li style="margin-bottom: 8px;">
+                Render. (s.f.). <a href="https://render.com/docs/deploy-node-express-app" target="_blank" style="color: #4CAF50; text-decoration: none;"><em>Deploy a Node Express App</em></a>. Recuperado de la documentación oficial de Render.
+            </li>
+            <li style="margin-bottom: 8px;">
+                MongoDB. (s.f.). <a href="https://www.mongodb.com/es/resources/products/platform/mongodb-atlas-tutorial" target="_blank" style="color: #4CAF50; text-decoration: none;"><em>Tutorial de MongoDB Atlas</em></a>. Recuperado de los recursos oficiales de MongoDB.
+            </li>
+            <li style="margin-bottom: 8px;">
+                Railway. (s.f.). <a href="https://docs.railway.com/databases/build-a-database-service" target="_blank" style="color: #4CAF50; text-decoration: none;"><em>Build a Database Service</em></a>. Recuperado de la documentación de Railway.
+            </li>
+        </ul>
+    </div>
+</details>
+
+    
+<div class="module-navigation">
         <button class="nav-module-btn prev" data-navigate="module5"><i class="fas fa-arrow-left"></i> Anterior</button>
         <button class="nav-module-btn next" data-navigate="course-completed">Finalizar Curso <i class="fas fa-check-circle"></i></button>
     </div>
